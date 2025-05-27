@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منشئ المستندات الذكي</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Tajawal', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(-45deg, #FAF0E6, #d9eafc, #b2e1ff, #a0d2eb); 
+            background-size: 400% 400%;
+            animation: gradientBG 25s ease infinite;
+            color: #0a2c4c; 
+            display: flex;
+            flex-direction: column; 
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            text-align: center;
+            overflow: hidden; 
+            position: relative; 
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Cloud Styles */
+        .cloud-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none; 
+            z-index: 0; 
+        }
+
+        .cloud {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.6); 
+            border-radius: 50%; 
+            opacity: 0.7;
+            filter: blur(5px); 
+            animation-timing-function: linear;
+            animation-iteration-count: infinite;
+        }
+
+        .cloud.x1 {
+            width: 200px; height: 60px;
+            top: 10%;
+            animation-name: moveClouds1;
+            animation-duration: 60s; 
+        }
+        .cloud.x2 {
+            width: 250px; height: 70px;
+            top: 25%;
+            left: -250px; 
+            animation-name: moveClouds2;
+            animation-duration: 80s; 
+            transform: scale(0.8);
+            opacity: 0.5;
+        }
+        .cloud.x3 {
+            width: 180px; height: 50px;
+            top: 60%;
+            left: -180px; 
+            animation-name: moveClouds1; 
+            animation-duration: 70s;
+            transform: scale(0.6);
+            opacity: 0.6;
+        }
+         .cloud.x4 {
+            width: 300px; height: 80px;
+            top: 75%;
+            left: -300px; 
+            animation-name: moveClouds2;
+            animation-duration: 90s;
+            transform: scale(0.9);
+            opacity: 0.4;
+        }
+         .cloud.x5 {
+            width: 150px; height: 40px;
+            top: 40%;
+            left: -150px; 
+            animation-name: moveClouds1;
+            animation-duration: 100s;
+            transform: scale(0.5);
+            opacity: 0.8;
+        }
+
+        .cloud:before, .cloud:after {
+            content: '';
+            position: absolute;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+            opacity: inherit; 
+        }
+        .cloud:before {
+            width: 100px; height: 100px;
+            top: -50px; left: 50px; 
+        }
+        .cloud:after {
+            width: 150px; height: 150px;
+            top: -70px; right: 30px;
+        }
+         .cloud.x1:before { width: 120px; height: 120px; top: -60px; left: 40px; }
+        .cloud.x1:after  { width: 100px; height: 100px; top: -40px; right: 20px; }
+
+        .cloud.x2:before { width: 150px; height: 150px; top: -75px; left: 60px; }
+        .cloud.x2:after  { width: 120px; height: 120px; top: -50px; right: 40px; }
+
+        @keyframes moveClouds1 {
+            0% { transform: translateX(-250px) scale(var(--scale,1)); } 
+            100% { transform: translateX(calc(100vw + 250px)) scale(var(--scale,1)); } 
+        }
+        @keyframes moveClouds2 {
+            0% { transform: translateX(-300px) scale(var(--scale,1)); } 
+            100% { transform: translateX(calc(100vw + 300px)) scale(var(--scale,1)); }
+        }
+
+        .page-container {
+            background: rgba(255, 255, 255, 0.2); 
+            backdrop-filter: blur(5px) saturate(120%);
+            -webkit-backdrop-filter: blur(5px) saturate(120%);
+            border-radius: 20px;
+            padding: 2rem 3rem;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+            max-width: 900px; 
+            width: 90%;
+            position: relative; 
+            z-index: 1;
+        }
+        
+        .header {
+            text-align: center; /* Ensure header content is centered */
+        }
+
+        .header-logo {
+            max-width: 180px; /* Adjust as needed */
+            max-height: 70px;  /* Adjust as needed */
+            margin: 0 auto 1rem auto; /* Center logo and add margin below */
+            display: block; /* Ensure it behaves as a block for auto margins */
+        }
+
+        .header h1 {
+            font-size: 2.8rem; 
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            color: #003366; 
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .header p {
+            font-size: 1.25rem;
+            margin-bottom: 2.5rem; 
+            color: #004c99; 
+        }
+
+        .document-selector {
+            display: flex;
+            flex-wrap: wrap; 
+            justify-content: center; 
+            gap: 2.5rem; 
+        }
+
+        .document-card {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(12px) saturate(150%);
+            -webkit-backdrop-filter: blur(12px) saturate(150%);
+            border-radius: 15px; 
+            border: 1px solid rgba(209, 213, 219, 0.4);
+            box-shadow: 0 8px 24px 0 rgba(31, 38, 135, 0.17);
+            padding: 2rem; 
+            width: 320px; 
+            text-decoration: none;
+            color: inherit;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center; 
+        }
+
+        .document-card:hover {
+            transform: translateY(-10px) scale(1.03); 
+            box-shadow: 0 12px 32px 0 rgba(31, 38, 135, 0.25);
+        }
+
+        .document-card h2 {
+            font-size: 1.6rem; 
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #003366;
+        }
+        
+        .document-card .icon {
+            font-size: 3rem; 
+            margin-bottom: 1rem;
+            color: #3b82f6; 
+        }
+
+        .document-card p.description {
+            font-size: 1rem;
+            color: #374151; 
+            line-height: 1.6;
+        }
+
+        .page-footer {
+            margin-top: 3rem; 
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.3); 
+            width: 100%;
+            max-width: 900px;
+        }
+        .page-footer p {
+            font-size: 0.9rem;
+            color: #004c99;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.2rem;
+            }
+            .header p {
+                font-size: 1.1rem;
+            }
+            .document-card {
+                width: 100%; 
+                max-width: 350px; 
+            }
+            .page-container {
+                padding: 1.5rem;
+                margin-top: 2rem;
+                margin-bottom: 2rem;
+            }
+            .header-logo {
+                max-width: 150px; /* Adjust logo size for smaller screens */
+                max-height: 60px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="cloud-container">
+        <div class="cloud x1"></div>
+        <div class="cloud x2"></div>
+        <div class="cloud x3"></div>
+        <div class="cloud x4"></div>
+        <div class="cloud x5"></div>
+    </div>
+
+    <div class="page-container">
+        <header class="header my-8">
+            <img src="src/amer-logo.png" alt="شعار آمر دبي" class="header-logo" onerror="this.alt='شعار آمر دبي غير متوفر'; this.src='https://placehold.co/180x70/CCCCCC/B22222?text=Amer+Logo+Missing';">
+            
+            <h1>أهلاً بك في منشئ المستندات الذكي!</h1>
+            <p>اختر نوع المستند الذي تود إنشاءه من الخيارات أدناه:</p>
+        </header>
+
+        <main class="document-selector">
+            <a href="Non-marriage.html" class="document-card">
+                <div class="icon">📄</div>
+                <h2>تعهّد بعدم زواج</h2>
+                <p class="description">إنشاء تعهد رسمي يثبت حالة عدم الزواج الحالية.</p>
+            </a>
+
+            <a href="Partner Cancellation NOC generator.html" class="document-card">
+                <div class="icon">🤝</div>
+                <h2>خطاب عدم ممانعة لإلغاء إقامة شريك</h2>
+                <p class="description">إصدار خطاب رسمي لطلب إلغاء إقامة شريك مع الإبقاء على حصصه في الشركة.</p>
+            </a>
+        </main>
+        
+        <footer class="page-footer">
+            <p>تم إنشاؤه بواسطة: <strong>مؤمن الحاج</strong></p>
+        </footer>
+    </div>
+</body>
+</html>

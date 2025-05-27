@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Born Fines Calculator</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap');
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #2C3E50, #4CA1AF);
+            font-family: 'Inter', sans-serif;
+            color: white;
+            overflow: hidden;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            backdrop-filter: blur(8px);
+        }
+        input {
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            margin-top: 12px;
+            width: 100%;
+            font-size: 16px;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.8);
+            color: #333;
+        }
+        input:focus {
+            outline: none;
+            background: white;
+        }
+        button {
+            background: #27AE60;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            margin-top: 15px;
+            cursor: pointer;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: #219150;
+        }
+        .result {
+            margin-top: 15px;
+            font-size: 20px;
+            font-weight: bold;
+            color: #f1f1f1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>New Born Fines Calculator</h1>
+        <label for="dob">Enter Date of Birth (DD-MM-YYYY):</label>
+        <input type="text" id="dob" placeholder="DD-MM-YYYY" maxlength="10">
+        <button onclick="calculateFine()">Calculate Fine</button>
+        <div id="result" class="result"></div>
+    </div>
+
+    <script>
+        document.getElementById("dob").addEventListener("input", function (e) {
+            let value = e.target.value.replace(/\D/g, "");
+            if (value.length > 2) value = value.slice(0, 2) + "-" + value.slice(2);
+            if (value.length > 5) value = value.slice(0, 5) + "-" + value.slice(5);
+            e.target.value = value;
+        });
+
+        document.getElementById("dob").addEventListener("keypress", function (e) {
+            if (e.key === "Enter") {
+                calculateFine();
+            }
+        });
+
+        function calculateFine() {
+            let dobInput = document.getElementById('dob').value;
+            let dateParts = dobInput.split('-');
+            if (dateParts.length !== 3) {
+                document.getElementById('result').innerText = "Please enter a valid date in DD-MM-YYYY format";
+                return;
+            }
+            
+            let day = parseInt(dateParts[0], 10);
+            let month = parseInt(dateParts[1], 10) - 1; 
+            let year = parseInt(dateParts[2], 10);
+            let birthDate = new Date(year, month, day);
+            
+            if (isNaN(birthDate.getTime())) {
+                document.getElementById('result').innerText = "Invalid date. Please enter in DD-MM-YYYY format.";
+                return;
+            }
+            
+            let today = new Date();
+            let timeDifference = today - birthDate;
+            let daysSinceBirth = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+            
+            let resultAfterSubtraction = daysSinceBirth - 120;
+            let finalFine = resultAfterSubtraction * 50;
+            
+            document.getElementById('result').innerText = `Total Fine: AED ${finalFine >= 0 ? finalFine.toLocaleString() : 0}`;
+        }
+    </script>
+</body>
+</html>

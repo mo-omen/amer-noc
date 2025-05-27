@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مولد خطاب عدم ممانعة لإلغاء إقامة شريك</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background: linear-gradient(135deg, #f0f4f8 0%, #d9e2ec 100%);
+            color: #333;
+        }
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(12px) saturate(150%);
+            -webkit-backdrop-filter: blur(12px) saturate(150%);
+            border-radius: 12px;
+            border: 1px solid rgba(209, 213, 219, 0.3);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.17);
+        }
+        .form-input, .form-select {
+            background-color: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(209, 213, 219, 0.5);
+            transition: all 0.3s ease;
+        }
+        .form-input:focus, .form-select:focus {
+            background-color: rgba(255, 255, 255, 1);
+            border-color: #60a5fa; /* Tailwind blue-400 */
+            box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.3);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px 0 rgba(59, 130, 246, 0.3);
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px 0 rgba(59, 130, 246, 0.4);
+        }
+        .btn-secondary {
+            background-color: #9ca3af; /* Tailwind gray-400 */
+            color: white;
+             transition: all 0.3s ease;
+        }
+        .btn-secondary:hover {
+            background-color: #6b7280; /* Tailwind gray-500 */
+            transform: translateY(-1px);
+        }
+
+        /* A4 Preview Styling */
+        #letterPreviewContainer {
+            display: none; /* Hidden by default */
+            margin-top: 2rem;
+            padding: 2rem;
+        }
+        #letterOutput {
+            background-color: white;
+            width: 210mm; /* A4 width */
+            min-height: 297mm; /* A4 height */
+            padding: 20mm 15mm; /* Typical A4 margins */
+            margin: 0 auto;
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            color: black;
+            font-size: 12pt; /* Standard letter font size */
+            line-height: 1.8;
+            position: relative; 
+            display: flex;
+            flex-direction: column;
+        }
+        #letterOutput h1, #letterOutput h2, #letterOutput p, #letterOutput div:not(.id-images-container):not(.image-signature-block) { /* Exclude flex containers from this rule */
+            text-align: right;
+        }
+        #letterOutput .date-line {
+            text-align: left; 
+            font-size: 11pt;
+            margin-bottom: 1.5rem;
+        }
+        #letterOutput .subject-line {
+            font-weight: bold;
+            text-align: center;
+            margin-top: 1rem;
+            margin-bottom: 1.5rem;
+            font-size: 14pt;
+        }
+        #letterOutput .main-content {
+            flex-grow: 1; /* Allows main content to take up space */
+        }
+        #letterOutput .signature-area {
+            margin-top: 2rem; /* Adjusted margin */
+            text-align: left;
+            padding-left: 1cm; /* Adjusted padding */
+        }
+        #letterOutput .id-images-container {
+            margin-top: 1.5rem; /* Adjusted margin */
+            padding-top: 1rem;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-start; /* Changed from stretch to allow natural height */
+            gap: 1rem;
+            width: 100%;
+        }
+        .image-signature-block {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            width: 48%; /* Each block takes roughly half the space */
+        }
+        .image-signature-block img {
+            max-width: 100%; 
+            max-height: 160px; /* Increased max-height for larger images */
+            border: 1px solid #ddd;
+            object-fit: contain;
+            margin-bottom: 0.5rem; 
+            border-radius: 4px;
+        }
+        .signature-line {
+            font-size: 10pt;
+            color: #333; /* Darker color for better readability */
+            margin-top: 0.5rem; 
+            width: 100%;
+            line-height: 1.4;
+        }
+        #letterOutput .id-images-container div > div:first-child { /* Targeting the placeholder text for missing image */
+             font-size: 10pt;
+             color: #777;
+             padding: 10px;
+             border: 1px dashed #ccc;
+             min-height: 80px;
+             display: flex;
+             align-items: center;
+             justify-content: center;
+             width: 100%; /* Make placeholder take width */
+             max-width: 200px; /* Control placeholder max width */
+             margin: 0 auto 0.5rem auto; /* Center placeholder and add bottom margin */
+        }
+        .attribution {
+            text-align: center;
+            font-size: 0.8rem;
+            color: #6b7280; /* Tailwind gray-500 */
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(209, 213, 219, 0.5);
+        }
+
+
+        /* Print specific styles */
+        @media print {
+            body {
+                background: none;
+                font-family: 'Tajawal', sans-serif; 
+            }
+            .no-print {
+                display: none !important;
+            }
+            #letterPreviewContainer {
+                display: block !important; 
+                margin: 0;
+                padding: 0;
+            }
+            #letterOutput {
+                width: 100%;
+                min-height: 277mm; /* Adjusted for typical printable area */
+                height: auto;
+                margin: 0;
+                box-shadow: none;
+                border: none;
+                padding: 10mm 10mm; /* Reduced padding for print */
+                font-size: 12pt;
+                line-height: 1.6;
+            }
+             #letterOutput .id-images-container img {
+                max-height: 140px; /* Slightly smaller for print potentially */
+            }
+            .image-signature-block {
+                page-break-inside: avoid; /* Try to keep image and signature together */
+            }
+            .attribution { 
+                display: none !important; /* Hide attribution on print */
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center p-4 sm:p-6 lg:p-8">
+
+    <div class="w-full max-w-4xl p-6 sm:p-8 glass-effect no-print">
+        <h1 class="text-2xl sm:text-3xl font-bold text-center text-gray-700 mb-8">
+            إنشاء خطاب عدم ممانعة لإلغاء إقامة شريك
+        </h1>
+
+        <form id="nocForm" class="space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label for="companyName" class="block text-sm font-medium text-gray-700 mb-1">اسم الشركة:</label>
+                    <input type="text" id="companyName" name="companyName" class="form-input w-full rounded-md p-2.5" placeholder="مثال: شركة النجوم الذهبية ش.ذ.م.م" required>
+                </div>
+                <div>
+                    <label for="licenseNumber" class="block text-sm font-medium text-gray-700 mb-1">رقم الرخصة:</label>
+                    <input type="text" id="licenseNumber" name="licenseNumber" class="form-input w-full rounded-md p-2.5" placeholder="مثال: 123456" required>
+                </div>
+            </div>
+
+            <h2 class="text-xl font-semibold text-gray-700 pt-4 border-t border-gray-300 mt-6">تفاصيل الشريك (المراد إلغاء إقامته)</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label for="partnerName" class="block text-sm font-medium text-gray-700 mb-1">اسم الشريك بالكامل:</label>
+                    <input type="text" id="partnerName" name="partnerName" class="form-input w-full rounded-md p-2.5" placeholder="الاسم كما في الهوية/الجواز" required>
+                </div>
+                <div>
+                    <label for="partnerGender" class="block text-sm font-medium text-gray-700 mb-1">جنس الشريك:</label>
+                    <select id="partnerGender" name="partnerGender" class="form-select w-full rounded-md p-2.5" required>
+                        <option value="male">ذكر (السيد)</option>
+                        <option value="female">أنثى (السيدة)</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="partnerNationality" class="block text-sm font-medium text-gray-700 mb-1">جنسية الشريك:</label>
+                    <input type="text" id="partnerNationality" name="partnerNationality" class="form-input w-full rounded-md p-2.5" placeholder="مثال: الهندية، المصرية" required>
+                </div>
+                <div>
+                    <label for="partnerIdNumber" class="block text-sm font-medium text-gray-700 mb-1">رقم هوية الشريك:</label>
+                    <input type="text" id="partnerIdNumber" name="partnerIdNumber" class="form-input w-full rounded-md p-2.5" placeholder="رقم الهوية الإماراتية" required>
+                </div>
+                <div>
+                    <label for="partnerPassportNumber" class="block text-sm font-medium text-gray-700 mb-1">رقم جواز سفر الشريك:</label>
+                    <input type="text" id="partnerPassportNumber" name="partnerPassportNumber" class="form-input w-full rounded-md p-2.5" placeholder="رقم جواز السفر" required>
+                </div>
+                 <div>
+                    <label for="partnerIdFile" class="block text-sm font-medium text-gray-700 mb-1">صورة هوية الشريك:</label>
+                    <input type="file" id="partnerIdFile" name="partnerIdFile" accept="image/*" class="form-input w-full rounded-md p-2 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                    <img id="partnerIdPreview" src="#" alt="معاينة هوية الشريك" class="mt-2 rounded-md max-h-32 hidden"/>
+                </div>
+            </div>
+
+            <h2 class="text-xl font-semibold text-gray-700 pt-4 border-t border-gray-300 mt-6">تفاصيل ممثل الشركة (الكفيل/الشريك الآخر)</h2>
+             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label for="representativeName" class="block text-sm font-medium text-gray-700 mb-1">اسم ممثل الشركة:</label>
+                    <input type="text" id="representativeName" name="representativeName" class="form-input w-full rounded-md p-2.5" placeholder="اسم ممثل الشركة (كما في الهوية)" required>
+                </div>
+                 <div>
+                    <label for="representativeIdFile" class="block text-sm font-medium text-gray-700 mb-1">صورة هوية ممثل الشركة:</label>
+                    <input type="file" id="representativeIdFile" name="representativeIdFile" accept="image/*" class="form-input w-full rounded-md p-2 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100">
+                    <img id="representativeIdPreview" src="#" alt="معاينة هوية الممثل" class="mt-2 rounded-md max-h-32 hidden"/>
+                </div>
+            </div>
+
+
+            <div class="flex flex-col sm:flex-row justify-center items-center gap-4 pt-6">
+                <button type="submit" class="btn-primary text-white font-semibold py-2.5 px-6 rounded-lg w-full sm:w-auto">
+                    إنشاء الخطاب
+                </button>
+                <button type="button" id="printLetterButton" class="btn-secondary font-semibold py-2.5 px-6 rounded-lg w-full sm:w-auto hidden">
+                    طباعة الخطاب
+                </button>
+            </div>
+        </form>
+        <div class="attribution">
+            تم إنشاؤه بواسطة: مؤمن الحاج
+        </div>
+    </div>
+
+    <div id="letterPreviewContainer" class="w-full glass-effect mt-8">
+        <div id="letterOutput" dir="rtl">
+            </div>
+    </div>
+
+    <script>
+        // Function to get current date in Arabic format DD/MM/YYYY
+        function getCurrentArabicDate() {
+            const today = new Date();
+            const day = String(today.getDate()).padStart(2, '0');
+            const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+            const year = today.getFullYear();
+            return `${day}/${month}/${year}`;
+        }
+
+        // Function to display image preview
+        function setupImagePreview(fileInputId, previewImageId) {
+            const fileInput = document.getElementById(fileInputId);
+            const previewImage = document.getElementById(previewImageId);
+            if (fileInput && previewImage) {
+                fileInput.addEventListener('change', function(event) {
+                    const file = event.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            previewImage.src = e.target.result;
+                            previewImage.classList.remove('hidden');
+                        }
+                        reader.readAsDataURL(file);
+                    } else {
+                        previewImage.src = "#";
+                        previewImage.classList.add('hidden');
+                    }
+                });
+            }
+        }
+
+        setupImagePreview('partnerIdFile', 'partnerIdPreview');
+        setupImagePreview('representativeIdFile', 'representativeIdPreview');
+
+        const nocForm = document.getElementById('nocForm');
+        const letterOutputDiv = document.getElementById('letterOutput');
+        const letterPreviewContainer = document.getElementById('letterPreviewContainer');
+        const printLetterButton = document.getElementById('printLetterButton');
+
+        nocForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const companyName = document.getElementById('companyName').value.trim();
+            const licenseNumber = document.getElementById('licenseNumber').value.trim();
+            const partnerName = document.getElementById('partnerName').value.trim();
+            const partnerGender = document.getElementById('partnerGender').value;
+            const partnerNationality = document.getElementById('partnerNationality').value.trim();
+            const partnerIdNumber = document.getElementById('partnerIdNumber').value.trim();
+            const partnerPassportNumber = document.getElementById('partnerPassportNumber').value.trim();
+            const representativeName = document.getElementById('representativeName').value.trim();
+
+
+            const partnerSalutation = partnerGender === 'male' ? 'السيد' : 'السيدة';
+            const currentDate = getCurrentArabicDate();
+
+            // Get image data URLs
+            const partnerIdPreviewSrc = document.getElementById('partnerIdPreview').src;
+            const representativeIdPreviewSrc = document.getElementById('representativeIdPreview').src;
+            
+            const partnerIdImageTag = (partnerIdPreviewSrc && partnerIdPreviewSrc !== '#' && !partnerIdPreviewSrc.endsWith('/') && !partnerIdPreviewSrc.startsWith('file://')) 
+                ? `<img src="${partnerIdPreviewSrc}" alt="هوية الشريك">` 
+                : '<div>(لم يتم رفع صورة هوية الشريك)</div>';
+            const representativeIdImageTag = (representativeIdPreviewSrc && representativeIdPreviewSrc !== '#' && !representativeIdPreviewSrc.endsWith('/') && !representativeIdPreviewSrc.startsWith('file://')) 
+                ? `<img src="${representativeIdPreviewSrc}" alt="هوية ممثل الشركة">` 
+                : '<div>(لم يتم رفع صورة هوية الممثل)</div>';
+            
+            const partnerSignatureText = `توقيع ${partnerSalutation} / ${partnerName || 'الشريك'}:`;
+            const representativeSignatureText = `توقيع ممثل الشركة / ${representativeName || 'الممثل'}:`;
+
+            letterOutputDiv.innerHTML = `
+                <div class="date-line">التاريخ: ${currentDate}</div>
+                <div class="main-content">
+                    <p class="mb-4">السادة / الإدارة العامة للإقامة وشؤون الأجانب - دبي الموقرين،</p>
+                    
+                    <p class="mb-6">تحية طيبة وبعد،</p>
+                    
+                    <h2 class="subject-line">الموضوع: طلب إلغاء إقامة شريك مع الإبقاء على الحصص</h2>
+                    
+                    <p class="mb-4">
+                        نقر نحن شركة / <strong>${companyName || '[اسم الشركة]'}</strong>، رقم الرخصة التجارية: <strong>${licenseNumber || '[رقم الرخصة]'}</strong>، 
+                        بأنه ليس لدينا أي مانع من إلغاء إقامة ${partnerSalutation} / <strong>${partnerName || '[اسم الشريك]'}</strong>، 
+                        الذي يحمل الجنسية <strong>${partnerNationality || '[الجنسية]'}</strong>، ورقم الهوية الإماراتية: <strong>${partnerIdNumber || '[رقم الهوية]'}</strong>، 
+                        ويحمل جواز سفر رقم: <strong>${partnerPassportNumber || '[رقم الجواز]'}</strong>.
+                    </p>
+                    
+                    <p class="mb-6">
+                        لذا، نرجو من سيادتكم التكرم بالموافقة على طلب إلغاء إقامة المذكور أعلاه مع الإبقاء على حصصه في الشركة.
+                    </p>
+                    
+                    <p class="mb-8">ولكم منا جزيل الشكر والتقدير والاحترام.</p>
+                </div>
+                
+                <div class="signature-area">
+                    <p>مع خالص التحية والتقدير،</p>
+                    <p>عن شركة: ${companyName || '[اسم الشركة]'}</p>
+                    <p>اسم ممثل الشركة: ${representativeName || '[اسم الممثل]'}</p>
+                    <br>
+                    <p>التوقيع والختم: .......................................</p>
+                </div>
+
+                <div class="id-images-container">
+                    <div class="image-signature-block">
+                        ${partnerIdImageTag}
+                        <p class="signature-line">${partnerSignatureText}<br>.......................................</p>
+                    </div>
+                    <div class="image-signature-block">
+                        ${representativeIdImageTag}
+                        <p class="signature-line">${representativeSignatureText}<br>.......................................</p>
+                    </div>
+                </div>
+            `;
+
+            letterPreviewContainer.style.display = 'block';
+            printLetterButton.classList.remove('hidden');
+            
+            // Scroll to the preview
+            letterPreviewContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+
+        printLetterButton.addEventListener('click', function() {
+            window.print();
+        });
+
+    </script>
+</body>
+</html>
