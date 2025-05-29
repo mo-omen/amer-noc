@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مولد خطاب عدم ممانعة لإلغاء إقامة شركاء</title>
+    <title>مولد خطاب عدم ممانعة لإلغاء إقامة شريك</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -50,133 +50,70 @@
             background-color: #6b7280; /* Tailwind gray-500 */
             transform: translateY(-1px);
         }
-        .btn-add, .btn-remove {
-            padding: 0.5rem 1rem;
-            border-radius: 0.375rem; /* rounded-md */
-            font-weight: 500;
-            transition: all 0.2s ease;
-        }
-        .btn-add {
-            background-color: #34d399; /* Tailwind green-400 */
-            color: white;
-        }
-        .btn-add:hover {
-            background-color: #10b981; /* Tailwind green-500 */
-        }
-        .btn-remove {
-            background-color: #ef4444; /* Tailwind red-500 */
-            color: white;
-        }
-        .btn-remove:hover {
-            background-color: #dc2626; /* Tailwind red-600 */
-        }
-        .partner-block {
-            border: 1px solid #e5e7eb; /* Tailwind gray-200 */
-            padding: 1.5rem;
-            border-radius: 0.5rem; /* rounded-lg */
-            margin-bottom: 1.5rem;
-            position: relative;
-        }
-        .partner-block:last-child {
-            margin-bottom: 0;
-        }
 
         /* A4 Preview Styling */
         #letterPreviewContainer {
             display: none; /* Hidden by default */
             margin-top: 2rem;
-            padding: 2rem; /* Padding for the preview container itself */
+            padding: 2rem;
         }
-        #letterOutput { /* Overall container for all pages */
-            background-color: #ccc; /* Light gray to see page boundaries in preview */
-            margin: 0 auto;
-            /* No fixed width/height here, pages inside will define it */
-        }
-        .letter-page, .additional-ids-page { /* Common styling for each "physical" page */
+        #letterOutput {
             background-color: white;
-            width: 210mm;
-            min-height: 297mm; /* A4 height, use min-height to allow content to expand */
-            height: 297mm; /* For preview consistency, can be problematic if content overflows */
+            width: 210mm; /* A4 width */
+            min-height: 297mm; /* A4 height */
             padding: 20mm 15mm; /* Typical A4 margins */
-            margin: 0 auto 1rem auto; /* Margin between pages in preview */
-            box-shadow: 0 0 10px rgba(0,0,0,0.15);
+            margin: 0 auto;
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
             color: black;
-            font-size: 12pt;
+            font-size: 12pt; /* Standard letter font size */
             line-height: 1.8;
+            position: relative;
             display: flex;
             flex-direction: column;
-            box-sizing: border-box;
-            overflow: hidden; /* Prevent content spill in preview, print handles overflow differently */
         }
-        .letter-page .main-content { /* Text content area on the first page */
-            flex-grow: 1; /* Allow text to take available space before signatures */
-        }
-        .letter-page h1, .letter-page h2, .letter-page p,
-        .additional-ids-page h1, .additional-ids-page h2, .additional-ids-page p {
-             /* Ensure text alignment is right for elements directly in page, not affecting flex items like id-images-container */
+        #letterOutput h1, #letterOutput h2, #letterOutput p, #letterOutput div:not(.id-images-container):not(.image-signature-block) { /* Exclude flex containers from this rule */
             text-align: right;
         }
-        .letter-page .date-line {
+        #letterOutput .date-line {
             text-align: left;
             font-size: 11pt;
             margin-bottom: 1.5rem;
         }
-        .letter-page .subject-line {
+        #letterOutput .subject-line {
             font-weight: bold;
             text-align: center;
             margin-top: 1rem;
             margin-bottom: 1.5rem;
             font-size: 14pt;
         }
-        .letter-page .partners-list {
-            margin-bottom: 1rem;
+        #letterOutput .main-content {
+            flex-grow: 1; /* Allows main content to take up space */
         }
-        .letter-page .partners-list p {
-            margin-bottom: 0.5rem;
-        }
-        .letter-page .signature-area { /* Company rep signature area */
-            margin-top: auto; /* Push to bottom if main-content doesn't fill */
-            padding-top: 2rem; /* Space above signature */
+        #letterOutput .signature-area {
+            margin-top: 2rem; /* Adjusted margin */
             text-align: left;
-            padding-left: 1cm;
+            padding-left: 1cm; /* Adjusted padding */
         }
-
-        .id-images-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-around;
-            align-items: flex-start; /* Align items to the top of their line */
-            gap: 1.5rem;
-            width: 100%;
-            margin-top: 1.5rem;
+        #letterOutput .id-images-container {
+            margin-top: 1.5rem; /* Adjusted margin */
             padding-top: 1rem;
-        }
-        .id-images-container.first-page-ids { /* Container for IDs on the first page */
             border-top: 1px solid #eee;
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-start; /* Changed from stretch to allow natural height */
+            gap: 1rem;
+            width: 100%;
         }
-         .id-images-container.additional-page-ids { /* Container for IDs on additional pages */
-            height: 100%; /* Try to fill the page vertically */
-            align-content: flex-start; /* Pack items at the start of the container */
-        }
-
         .image-signature-block {
             display: flex;
             flex-direction: column;
             align-items: center;
             text-align: center;
-            margin-bottom: 1rem; /* Spacing below each block if they wrap */
+            width: 48%; /* Each block takes roughly half the space */
         }
-        .id-images-container.first-page-ids .image-signature-block {
-            width: calc( (100% - 1.5rem) / 2 ); /* For 2 items with 1.5rem gap */
-        }
-        .id-images-container.additional-page-ids .image-signature-block {
-            width: calc( (100% - 2 * 1.5rem) / 3 ); /* For 3 items with 1.5rem gap */
-            max-height: calc( (100% / 2) - 1.5rem); /* approx 2 rows */
-        }
-
         .image-signature-block img {
             max-width: 100%;
-            max-height: 180px; /* Slightly reduced to fit more blocks potentially */
+            max-height: 240px; /* << UPDATED: Increased max-height for larger images on screen */
             border: 1px solid #ddd;
             object-fit: contain;
             margin-bottom: 0.5rem;
@@ -184,56 +121,51 @@
         }
         .signature-line {
             font-size: 10pt;
-            color: #333;
+            color: #333; /* Darker color for better readability */
             margin-top: 0.5rem;
             width: 100%;
             line-height: 1.4;
         }
-        .placeholder-image { /* Replaces previous #letterOutput .id-images-container div > div:first-child */
+        #letterOutput .id-images-container div > div:first-child { /* Targeting the placeholder text for missing image */
              font-size: 10pt;
              color: #777;
              padding: 10px;
              border: 1px dashed #ccc;
-             min-height: 120px; /* Keep a decent placeholder size */
+             min-height: 120px; /* Increased min-height for placeholder to match larger images */
              display: flex;
              align-items: center;
              justify-content: center;
-             width: 100%; /* Placeholder takes full width of its parent .image-signature-block */
-             max-width: 220px; /* Max width for the placeholder content itself */
-             margin: 0 auto 0.5rem auto;
-             background-color: #f9f9f9;
+             width: 100%; /* Make placeholder take width */
+             max-width: 250px; /* Control placeholder max width */
+             margin: 0 auto 0.5rem auto; /* Center placeholder and add bottom margin */
         }
         .attribution {
             text-align: center;
             font-size: 0.8rem;
-            color: #6b7280;
+            color: #6b7280; /* Tailwind gray-500 */
             margin-top: 2rem;
             padding-top: 1rem;
             border-top: 1px solid rgba(209, 213, 219, 0.5);
         }
-        .page-break { /* Helper for forcing page breaks in print */
-            display: none; /* Hidden on screen */
-        }
 
+
+        /* Print specific styles */
         @media print {
             body {
                 background: none;
                 font-family: 'Tajawal', sans-serif;
             }
-            .no-print { display: none !important; }
+            .no-print {
+                display: none !important;
+            }
             #letterPreviewContainer {
                 display: block !important;
                 margin: 0;
                 padding: 0;
             }
             #letterOutput {
-                background-color: transparent; /* No background for actual print */
-                margin: 0;
-                box-shadow: none;
-            }
-            .letter-page, .additional-ids-page {
-                width: 100%; /* Use full printable width */
-                min-height: auto; /* Let content dictate height for print */
+                width: 100%;
+                min-height: 277mm; /* Adjusted for typical printable area */
                 height: auto;
                 margin: 0;
                 box-shadow: none;
@@ -241,35 +173,16 @@
                 padding: 10mm 10mm; /* Reduced padding for print */
                 font-size: 12pt;
                 line-height: 1.6;
-                page-break-inside: avoid; /* Try to keep content of a logical page together */
-                overflow: visible; /* Allow content to flow naturally for printing */
             }
-            .page-break {
-                display: block !important;
-                page-break-after: always !important;
-                height: 0;
-                width: 0;
-                border: 0;
-                margin: 0;
-                padding: 0;
+             #letterOutput .id-images-container img {
+                max-height: 200px; /* << UPDATED: Increased max-height for print */
             }
-            .letter-page .signature-area {
-                margin-top: 1rem; /* Adjust for print */
-                padding-top: 1rem;
+            .image-signature-block {
+                page-break-inside: avoid; /* Try to keep image and signature together */
             }
-            .id-images-container {
-                gap: 1cm; /* Print gap */
+            .attribution {
+                display: none !important; /* Hide attribution on print */
             }
-            .id-images-container.first-page-ids .image-signature-block {
-                width: calc( (100% - 1cm) / 2 );
-            }
-            .id-images-container.additional-page-ids .image-signature-block {
-                width: calc( (100% - 2 * 1cm) / 3 );
-            }
-             .image-signature-block img {
-                max-height: 160px; /* Slightly smaller for print if needed */
-            }
-            .attribution { display: none !important; }
         }
     </style>
 </head>
@@ -277,7 +190,7 @@
 
     <div class="w-full max-w-4xl p-6 sm:p-8 glass-effect no-print">
         <h1 class="text-2xl sm:text-3xl font-bold text-center text-gray-700 mb-8">
-            إنشاء خطاب عدم ممانعة لإلغاء إقامة شركاء
+            إنشاء خطاب عدم ممانعة لإلغاء إقامة شريك
         </h1>
 
         <form id="nocForm" class="space-y-6">
@@ -292,43 +205,37 @@
                 </div>
             </div>
 
-            <div id="partnersContainer">
-                <div class="partner-block" data-partner-index="0">
-                    <h2 class="text-xl font-semibold text-gray-700 mb-4">تفاصيل الشريك (1)</h2>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label for="partnerName_0" class="block text-sm font-medium text-gray-700 mb-1">اسم الشريك بالكامل:</label>
-                            <input type="text" id="partnerName_0" name="partnerName[]" class="form-input w-full rounded-md p-2.5" placeholder="الاسم كما في الهوية/الجواز" required>
-                        </div>
-                        <div>
-                            <label for="partnerGender_0" class="block text-sm font-medium text-gray-700 mb-1">جنس الشريك:</label>
-                            <select id="partnerGender_0" name="partnerGender[]" class="form-select w-full rounded-md p-2.5" required>
-                                <option value="male">ذكر (السيد)</option>
-                                <option value="female">أنثى (السيدة)</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label for="partnerNationality_0" class="block text-sm font-medium text-gray-700 mb-1">جنسية الشريك:</label>
-                            <input type="text" id="partnerNationality_0" name="partnerNationality[]" class="form-input w-full rounded-md p-2.5" placeholder="مثال: الهندية، المصرية" required>
-                        </div>
-                        <div>
-                            <label for="partnerIdNumber_0" class="block text-sm font-medium text-gray-700 mb-1">رقم هوية الشريك:</label>
-                            <input type="text" id="partnerIdNumber_0" name="partnerIdNumber[]" class="form-input w-full rounded-md p-2.5" placeholder="رقم الهوية الإماراتية" required>
-                        </div>
-                        <div>
-                            <label for="partnerPassportNumber_0" class="block text-sm font-medium text-gray-700 mb-1">رقم جواز سفر الشريك:</label>
-                            <input type="text" id="partnerPassportNumber_0" name="partnerPassportNumber[]" class="form-input w-full rounded-md p-2.5" placeholder="رقم جواز السفر" required>
-                        </div>
-                         <div>
-                            <label for="partnerIdFile_0" class="block text-sm font-medium text-gray-700 mb-1">صورة هوية الشريك:</label>
-                            <input type="file" id="partnerIdFile_0" name="partnerIdFile[]" accept="image/*" class="form-input w-full rounded-md p-2 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
-                            <img id="partnerIdPreview_0" src="#" alt="معاينة هوية الشريك" class="mt-2 rounded-md max-h-32 hidden"/>
-                        </div>
-                    </div>
-                    <button type="button" class="btn-remove absolute top-4 left-4 remove-partner-btn" style="display: none;">حذف الشريك</button>
+            <h2 class="text-xl font-semibold text-gray-700 pt-4 border-t border-gray-300 mt-6">تفاصيل الشريك (المراد إلغاء إقامته)</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label for="partnerName" class="block text-sm font-medium text-gray-700 mb-1">اسم الشريك بالكامل:</label>
+                    <input type="text" id="partnerName" name="partnerName" class="form-input w-full rounded-md p-2.5" placeholder="الاسم كما في الهوية/الجواز" required>
+                </div>
+                <div>
+                    <label for="partnerGender" class="block text-sm font-medium text-gray-700 mb-1">جنس الشريك:</label>
+                    <select id="partnerGender" name="partnerGender" class="form-select w-full rounded-md p-2.5" required>
+                        <option value="male">ذكر (السيد)</option>
+                        <option value="female">أنثى (السيدة)</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="partnerNationality" class="block text-sm font-medium text-gray-700 mb-1">جنسية الشريك:</label>
+                    <input type="text" id="partnerNationality" name="partnerNationality" class="form-input w-full rounded-md p-2.5" placeholder="مثال: الهندية، المصرية" required>
+                </div>
+                <div>
+                    <label for="partnerIdNumber" class="block text-sm font-medium text-gray-700 mb-1">رقم هوية الشريك:</label>
+                    <input type="text" id="partnerIdNumber" name="partnerIdNumber" class="form-input w-full rounded-md p-2.5" placeholder="رقم الهوية الإماراتية" required>
+                </div>
+                <div>
+                    <label for="partnerPassportNumber" class="block text-sm font-medium text-gray-700 mb-1">رقم جواز سفر الشريك:</label>
+                    <input type="text" id="partnerPassportNumber" name="partnerPassportNumber" class="form-input w-full rounded-md p-2.5" placeholder="رقم جواز السفر" required>
+                </div>
+                 <div>
+                    <label for="partnerIdFile" class="block text-sm font-medium text-gray-700 mb-1">صورة هوية الشريك:</label>
+                    <input type="file" id="partnerIdFile" name="partnerIdFile" accept="image/*" class="form-input w-full rounded-md p-2 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                    <img id="partnerIdPreview" src="#" alt="معاينة هوية الشريك" class="mt-2 rounded-md max-h-32 hidden"/>
                 </div>
             </div>
-            <button type="button" id="addPartnerBtn" class="btn-add mt-4">إضافة شريك آخر</button>
 
             <h2 class="text-xl font-semibold text-gray-700 pt-4 border-t border-gray-300 mt-6">تفاصيل ممثل الشركة (الكفيل/الشريك الآخر)</h2>
              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -358,18 +265,16 @@
     </div>
 
     <div id="letterPreviewContainer" class="w-full glass-effect mt-8">
-        <div id="letterOutput">
+        <div id="letterOutput" dir="rtl">
             </div>
     </div>
 
     <script>
-        let partnerCounter = 0; // Counter for unique IDs for dynamically added partners
-
         // Function to get current date in Arabic format DD/MM/YYYY
         function getCurrentArabicDate() {
             const today = new Date();
             const day = String(today.getDate()).padStart(2, '0');
-            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
             const year = today.getFullYear();
             return `${day}/${month}/${year}`;
         }
@@ -395,146 +300,75 @@
                 });
             }
         }
-        
-        // Setup for initial partner and representative
-        setupImagePreview('partnerIdFile_0', 'partnerIdPreview_0');
+
+        // Setup image previews for the file inputs
+        setupImagePreview('partnerIdFile', 'partnerIdPreview');
         setupImagePreview('representativeIdFile', 'representativeIdPreview');
 
-        const partnersContainer = document.getElementById('partnersContainer');
-        const addPartnerBtn = document.getElementById('addPartnerBtn');
-
-        // Function to create a new partner input block
-        function createPartnerBlock(index) {
-            const newPartnerBlock = document.createElement('div');
-            newPartnerBlock.classList.add('partner-block');
-            newPartnerBlock.setAttribute('data-partner-index', index); // This index is for dynamic creation
-            newPartnerBlock.innerHTML = `
-                <h2 class="text-xl font-semibold text-gray-700 mb-4">تفاصيل الشريك (${partnersContainer.children.length + 1})</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div><label for="partnerName_${index}" class="block text-sm font-medium text-gray-700 mb-1">اسم الشريك بالكامل:</label><input type="text" id="partnerName_${index}" name="partnerName[]" class="form-input w-full rounded-md p-2.5" placeholder="الاسم كما في الهوية/الجواز" required></div>
-                    <div><label for="partnerGender_${index}" class="block text-sm font-medium text-gray-700 mb-1">جنس الشريك:</label><select id="partnerGender_${index}" name="partnerGender[]" class="form-select w-full rounded-md p-2.5" required><option value="male">ذكر (السيد)</option><option value="female">أنثى (السيدة)</option></select></div>
-                    <div><label for="partnerNationality_${index}" class="block text-sm font-medium text-gray-700 mb-1">جنسية الشريك:</label><input type="text" id="partnerNationality_${index}" name="partnerNationality[]" class="form-input w-full rounded-md p-2.5" placeholder="مثال: الهندية، المصرية" required></div>
-                    <div><label for="partnerIdNumber_${index}" class="block text-sm font-medium text-gray-700 mb-1">رقم هوية الشريك:</label><input type="text" id="partnerIdNumber_${index}" name="partnerIdNumber[]" class="form-input w-full rounded-md p-2.5" placeholder="رقم الهوية الإماراتية" required></div>
-                    <div><label for="partnerPassportNumber_${index}" class="block text-sm font-medium text-gray-700 mb-1">رقم جواز سفر الشريك:</label><input type="text" id="partnerPassportNumber_${index}" name="partnerPassportNumber[]" class="form-input w-full rounded-md p-2.5" placeholder="رقم جواز السفر" required></div>
-                    <div><label for="partnerIdFile_${index}" class="block text-sm font-medium text-gray-700 mb-1">صورة هوية الشريك:</label><input type="file" id="partnerIdFile_${index}" name="partnerIdFile[]" accept="image/*" class="form-input w-full rounded-md p-2 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"><img id="partnerIdPreview_${index}" src="#" alt="معاينة هوية الشريك" class="mt-2 rounded-md max-h-32 hidden"/></div>
-                </div>
-                <button type="button" class="btn-remove absolute top-4 left-4 remove-partner-btn">حذف الشريك</button>
-            `;
-            partnersContainer.appendChild(newPartnerBlock);
-            setupImagePreview(`partnerIdFile_${index}`, `partnerIdPreview_${index}`);
-            updateRemoveButtonsVisibility();
-        }
-
-        addPartnerBtn.addEventListener('click', () => {
-            partnerCounter++; // Increment for unique ID generation
-            createPartnerBlock(partnerCounter);
-        });
-        
-        // Event listener for removing partner blocks
-        partnersContainer.addEventListener('click', function(event) {
-            if (event.target.classList.contains('remove-partner-btn')) {
-                event.target.closest('.partner-block').remove();
-                updatePartnerHeaders(); // Renumber headers
-                updateRemoveButtonsVisibility();
-            }
-        });
-        
-        // Function to update partner block headers (e.g., "تفاصيل الشريك (1)")
-        function updatePartnerHeaders() {
-            const partnerBlocks = partnersContainer.querySelectorAll('.partner-block');
-            partnerBlocks.forEach((block, idx) => {
-                block.querySelector('h2').textContent = `تفاصيل الشريك (${idx + 1})`;
-            });
-        }
-
-        // Function to show/hide remove buttons
-        function updateRemoveButtonsVisibility() {
-            const partnerBlocks = partnersContainer.querySelectorAll('.partner-block');
-            partnerBlocks.forEach((block) => {
-                const removeBtn = block.querySelector('.remove-partner-btn');
-                if (removeBtn) {
-                    removeBtn.style.display = partnerBlocks.length > 1 ? 'inline-block' : 'none';
-                }
-            });
-        }
-        updateRemoveButtonsVisibility(); // Initial call for the first block
-
+        // Get DOM elements
         const nocForm = document.getElementById('nocForm');
         const letterOutputDiv = document.getElementById('letterOutput');
         const letterPreviewContainer = document.getElementById('letterPreviewContainer');
         const printLetterButton = document.getElementById('printLetterButton');
 
-        // Form submission handler
+        // Event listener for form submission
         nocForm.addEventListener('submit', function(event) {
-            event.preventDefault();
+            event.preventDefault(); // Prevent default form submission
 
-            // Collect company and representative details
+            // Get form values
             const companyName = document.getElementById('companyName').value.trim();
             const licenseNumber = document.getElementById('licenseNumber').value.trim();
+            const partnerName = document.getElementById('partnerName').value.trim();
+            const partnerGender = document.getElementById('partnerGender').value;
+            const partnerNationality = document.getElementById('partnerNationality').value.trim();
+            const partnerIdNumber = document.getElementById('partnerIdNumber').value.trim();
+            const partnerPassportNumber = document.getElementById('partnerPassportNumber').value.trim();
             const representativeName = document.getElementById('representativeName').value.trim();
+
+            // Determine partner salutation
+            const partnerSalutation = partnerGender === 'male' ? 'السيد' : 'السيدة';
             const currentDate = getCurrentArabicDate();
 
-            // Collect data for all partners
-            const partnersData = [];
-            const partnerBlocks = partnersContainer.querySelectorAll('.partner-block');
-            partnerBlocks.forEach((block) => {
-                // Query inputs relative to the current block to get their values
-                partnersData.push({
-                    name: block.querySelector(`input[id^="partnerName_"]`).value.trim(),
-                    gender: block.querySelector(`select[id^="partnerGender_"]`).value,
-                    nationality: block.querySelector(`input[id^="partnerNationality_"]`).value.trim(),
-                    idNumber: block.querySelector(`input[id^="partnerIdNumber_"]`).value.trim(),
-                    passportNumber: block.querySelector(`input[id^="partnerPassportNumber_"]`).value.trim(),
-                    idPreviewSrc: block.querySelector(`img[id^="partnerIdPreview_"]`).src,
-                    salutation: block.querySelector(`select[id^="partnerGender_"]`).value === 'male' ? 'السيد' : 'السيدة'
-                });
-            });
+            // Get image data URLs from the form previews
+            const partnerIdPreviewSrc = document.getElementById('partnerIdPreview').src;
+            const representativeIdPreviewSrc = document.getElementById('representativeIdPreview').src;
 
-            // --- Start Building Letter HTML ---
-            letterOutputDiv.innerHTML = ''; // Clear previous content
+            // Create image tags for the letter, or placeholder text if no image is uploaded
+            const partnerIdImageTag = (partnerIdPreviewSrc && partnerIdPreviewSrc !== '#' && !partnerIdPreviewSrc.endsWith('/') && !partnerIdPreviewSrc.startsWith('file://'))
+                ? `<img src="${partnerIdPreviewSrc}" alt="هوية الشريك">`
+                : '<div>(لم يتم رفع صورة هوية الشريك)</div>';
+            const representativeIdImageTag = (representativeIdPreviewSrc && representativeIdPreviewSrc !== '#' && !representativeIdPreviewSrc.endsWith('/') && !representativeIdPreviewSrc.startsWith('file://'))
+                ? `<img src="${representativeIdPreviewSrc}" alt="هوية ممثل الشركة">`
+                : '<div>(لم يتم رفع صورة هوية الممثل)</div>';
 
-            // --- Main Letter Content Page (Page 1) ---
-            const mainLetterPage = document.createElement('div');
-            mainLetterPage.classList.add('letter-page');
+            // Define signature line texts
+            const partnerSignatureText = `توقيع ${partnerSalutation} / ${partnerName || 'الشريك'}:`;
+            const representativeSignatureText = `توقيع ممثل الشركة / ${representativeName || 'الممثل'}:`;
 
-            let partnersListHtml = '';
-            if (partnersData.length === 0) {
-                partnersListHtml = `<p class="mb-4">نقر نحن شركة / <strong>${companyName || '[اسم الشركة]'}</strong>، رقم الرخصة التجارية: <strong>${licenseNumber || '[رقم الرخصة]'}</strong>، بأنه ليس لدينا أي مانع بخصوص الإجراءات المطلوبة.</p>`;
-            } else if (partnersData.length === 1) {
-                 partnersListHtml = `<p class="mb-4">
-                    نقر نحن شركة / <strong>${companyName || '[اسم الشركة]'}</strong>، رقم الرخصة التجارية: <strong>${licenseNumber || '[رقم الرخصة]'}</strong>، 
-                    بأنه ليس لدينا أي مانع من إلغاء إقامة ${partnersData[0].salutation} / <strong>${partnersData[0].name || '[اسم الشريك]'}</strong>، 
-                    الذي يحمل الجنسية <strong>${partnersData[0].nationality || '[الجنسية]'}</strong>، ورقم الهوية الإماراتية: <strong>${partnersData[0].idNumber || '[رقم الهوية]'}</strong>، 
-                    ويحمل جواز سفر رقم: <strong>${partnersData[0].passportNumber || '[رقم الجواز]'}</strong>.
-                </p>`;
-            } else { // Multiple partners
-                partnersListHtml = `<p class="mb-4">
-                    نقر نحن شركة / <strong>${companyName || '[اسم الشركة]'}</strong>، رقم الرخصة التجارية: <strong>${licenseNumber || '[رقم الرخصة]'}</strong>، 
-                    بأنه ليس لدينا أي مانع من إلغاء إقامة الشركاء التالية أسماؤهم:
-                </p>
-                <ul class="list-disc list-inside pr-6 mb-4" style="text-align: right;">`;
-                partnersData.forEach(partner => {
-                    partnersListHtml += `<li>
-                        ${partner.salutation} / <strong>${partner.name || '[اسم الشريك]'}</strong>، 
-                        الجنسية: <strong>${partner.nationality || '[الجنسية]'}</strong>، هوية: <strong>${partner.idNumber || '[رقم الهوية]'}</strong>، 
-                        جواز سفر: <strong>${partner.passportNumber || '[رقم الجواز]'}</strong>.
-                    </li>`;
-                });
-                partnersListHtml += '</ul>';
-            }
-            
-            mainLetterPage.innerHTML = `
+            // Construct the letter HTML content
+            letterOutputDiv.innerHTML = `
                 <div class="date-line">التاريخ: ${currentDate}</div>
                 <div class="main-content">
                     <p class="mb-4">السادة / الإدارة العامة للإقامة وشؤون الأجانب - دبي الموقرين،</p>
+
                     <p class="mb-6">تحية طيبة وبعد،</p>
-                    <h2 class="subject-line">الموضوع: طلب إلغاء إقامة ${partnersData.length > 1 ? 'شركاء' : (partnersData.length === 1 ? 'شريك' : '')} مع الإبقاء على الحصص</h2>
-                    ${partnersListHtml}
-                    <p class="mb-6">
-                        لذا، نرجو من سيادتكم التكرم بالموافقة على طلب إلغاء إقامة المذكور${partnersData.length > 1 ? 'ين' : (partnersData.length === 1 ? '' : ' الإجراءات اللازمة')} أعلاه مع الإبقاء على حصصهم في الشركة.
+
+                    <h2 class="subject-line">الموضوع: طلب إلغاء إقامة شريك مع الإبقاء على الحصص</h2>
+
+                    <p class="mb-4">
+                        نقر نحن شركة / <strong>${companyName || '[اسم الشركة]'}</strong>، رقم الرخصة التجارية: <strong>${licenseNumber || '[رقم الرخصة]'}</strong>،
+                        بأنه ليس لدينا أي مانع من إلغاء إقامة ${partnerSalutation} / <strong>${partnerName || '[اسم الشريك]'}</strong>،
+                        الذي يحمل الجنسية <strong>${partnerNationality || '[الجنسية]'}</strong>، ورقم الهوية الإماراتية: <strong>${partnerIdNumber || '[رقم الهوية]'}</strong>،
+                        ويحمل جواز سفر رقم: <strong>${partnerPassportNumber || '[رقم الجواز]'}</strong>.
                     </p>
+
+                    <p class="mb-6">
+                        لذا، نرجو من سيادتكم التكرم بالموافقة على طلب إلغاء إقامة المذكور أعلاه مع الإبقاء على حصصه في الشركة.
+                    </p>
+
                     <p class="mb-8">ولكم منا جزيل الشكر والتقدير والاحترام.</p>
                 </div>
+
                 <div class="signature-area">
                     <p>مع خالص التحية والتقدير،</p>
                     <p>عن شركة: ${companyName || '[اسم الشركة]'}</p>
@@ -542,90 +376,32 @@
                     <br>
                     <p>التوقيع والختم: .......................................</p>
                 </div>
-            `;
 
-            // --- IDs for the First Page ---
-            const firstPageIdsContainer = document.createElement('div');
-            firstPageIdsContainer.classList.add('id-images-container', 'first-page-ids');
-            let firstPageIdBlocksHtml = '';
-
-            // Add first partner's ID block if a partner exists
-            if (partnersData.length > 0) {
-                const firstPartner = partnersData[0];
-                const partnerIdImageTag = (firstPartner.idPreviewSrc && firstPartner.idPreviewSrc !== '#' && !firstPartner.idPreviewSrc.endsWith('/') && !firstPartner.idPreviewSrc.startsWith('file://')) 
-                    ? `<img src="${firstPartner.idPreviewSrc}" alt="هوية الشريك ${firstPartner.name}">` 
-                    : '<div class="placeholder-image">(لم يتم رفع صورة هوية الشريك)</div>';
-                const partnerSignatureText = `توقيع ${firstPartner.salutation} / ${firstPartner.name || 'الشريك'}:`;
-                firstPageIdBlocksHtml += `
+                <div class="id-images-container">
                     <div class="image-signature-block">
                         ${partnerIdImageTag}
                         <p class="signature-line">${partnerSignatureText}<br>.......................................</p>
                     </div>
-                `;
-            }
-
-            // Add Company Representative's ID block
-            const representativeIdPreviewSrc = document.getElementById('representativeIdPreview').src;
-            const representativeIdImageTag = (representativeIdPreviewSrc && representativeIdPreviewSrc !== '#' && !representativeIdPreviewSrc.endsWith('/') && !representativeIdPreviewSrc.startsWith('file://')) 
-                ? `<img src="${representativeIdPreviewSrc}" alt="هوية ممثل الشركة">` 
-                : '<div class="placeholder-image">(لم يتم رفع صورة هوية الممثل)</div>';
-            const representativeSignatureText = `توقيع ممثل الشركة / ${representativeName || 'الممثل'}:`;
-            firstPageIdBlocksHtml += `
-                <div class="image-signature-block">
-                    ${representativeIdImageTag}
-                    <p class="signature-line">${representativeSignatureText}<br>.......................................</p>
+                    <div class="image-signature-block">
+                        ${representativeIdImageTag}
+                        <p class="signature-line">${representativeSignatureText}<br>.......................................</p>
+                    </div>
                 </div>
             `;
-            firstPageIdsContainer.innerHTML = firstPageIdBlocksHtml;
-            mainLetterPage.appendChild(firstPageIdsContainer);
-            letterOutputDiv.appendChild(mainLetterPage);
 
-            // --- Additional Pages for Remaining Partner IDs ---
-            const remainingPartners = partnersData.slice(1); // All partners except the first one
-            const MAX_IDS_PER_ADDITIONAL_PAGE = 6;
-
-            if (remainingPartners.length > 0) {
-                for (let i = 0; i < remainingPartners.length; i += MAX_IDS_PER_ADDITIONAL_PAGE) {
-                    const pageBreakDiv = document.createElement('div');
-                    pageBreakDiv.classList.add('page-break');
-                    letterOutputDiv.appendChild(pageBreakDiv);
-
-                    const additionalIdPage = document.createElement('div');
-                    additionalIdPage.classList.add('additional-ids-page'); 
-
-                    const idsContainerForThisPage = document.createElement('div');
-                    idsContainerForThisPage.classList.add('id-images-container', 'additional-page-ids');
-                    let additionalPageBlocksHtml = '';
-
-                    const chunk = remainingPartners.slice(i, i + MAX_IDS_PER_ADDITIONAL_PAGE);
-                    chunk.forEach(partner => {
-                        const partnerIdImageTag = (partner.idPreviewSrc && partner.idPreviewSrc !== '#' && !partner.idPreviewSrc.endsWith('/') && !partner.idPreviewSrc.startsWith('file://')) 
-                            ? `<img src="${partner.idPreviewSrc}" alt="هوية الشريك ${partner.name}">` 
-                            : '<div class="placeholder-image">(لم يتم رفع صورة هوية الشريك)</div>';
-                        const partnerSignatureText = `توقيع ${partner.salutation} / ${partner.name || 'الشريك'}:`;
-                        additionalPageBlocksHtml += `
-                            <div class="image-signature-block">
-                                ${partnerIdImageTag}
-                                <p class="signature-line">${partnerSignatureText}<br>.......................................</p>
-                            </div>
-                        `;
-                    });
-                    idsContainerForThisPage.innerHTML = additionalPageBlocksHtml;
-                    additionalIdPage.appendChild(idsContainerForThisPage);
-                    letterOutputDiv.appendChild(additionalIdPage);
-                }
-            }
-
-            // Show preview and scroll
+            // Show the letter preview and print button
             letterPreviewContainer.style.display = 'block';
             printLetterButton.classList.remove('hidden');
+
+            // Scroll to the preview section
             letterPreviewContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
         });
 
-        // Print button handler
+        // Event listener for the print button
         printLetterButton.addEventListener('click', function() {
-            window.print();
+            window.print(); // Trigger browser's print dialog
         });
+
     </script>
 </body>
 </html>
