@@ -113,7 +113,7 @@
         }
         .image-signature-block img {
             max-width: 100%;
-            max-height: 240px; /* << UPDATED: Increased max-height for larger images on screen */
+            max-height: 240px; /* Increased max-height for larger images on screen */
             border: 1px solid #ddd;
             object-fit: contain;
             margin-bottom: 0.5rem;
@@ -147,7 +147,18 @@
             padding-top: 1rem;
             border-top: 1px solid rgba(209, 213, 219, 0.5);
         }
-
+        .radio-group label {
+            display: inline-flex;
+            align-items: center;
+            margin-right: 1.5rem;
+            cursor: pointer;
+            font-weight: 500;
+            color: #4b5563; /* Tailwind gray-700 */
+        }
+        .radio-group input[type="radio"] {
+            margin-left: 0.5rem;
+            accent-color: #3b82f6; /* Tailwind blue-500 */
+        }
 
         /* Print specific styles */
         @media print {
@@ -175,7 +186,7 @@
                 line-height: 1.6;
             }
              #letterOutput .id-images-container img {
-                max-height: 200px; /* << UPDATED: Increased max-height for print */
+                max-height: 200px; /* Increased max-height for print */
             }
             .image-signature-block {
                 page-break-inside: avoid; /* Try to keep image and signature together */
@@ -230,23 +241,73 @@
                     <label for="partnerPassportNumber" class="block text-sm font-medium text-gray-700 mb-1">رقم جواز سفر الشريك:</label>
                     <input type="text" id="partnerPassportNumber" name="partnerPassportNumber" class="form-input w-full rounded-md p-2.5" placeholder="رقم جواز السفر" required>
                 </div>
-                 <div>
-                    <label for="partnerIdFile" class="block text-sm font-medium text-gray-700 mb-1">صورة هوية الشريك:</label>
-                    <input type="file" id="partnerIdFile" name="partnerIdFile" accept="image/*" class="form-input w-full rounded-md p-2 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
-                    <img id="partnerIdPreview" src="#" alt="معاينة هوية الشريك" class="mt-2 rounded-md max-h-32 hidden"/>
+
+                <!-- Partner ID Upload Section -->
+                <div id="partnerIdUploadSection" class="col-span-full">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">صورة هوية الشريك:</label>
+                    <div class="radio-group mb-4">
+                        <label>
+                            <input type="radio" name="partnerIdUploadType" value="single" checked> صورة واحدة
+                        </label>
+                        <label>
+                            <input type="radio" name="partnerIdUploadType" value="dual"> صورتان (أمامية وخلفية)
+                        </label>
+                    </div>
+
+                    <div id="partnerSingleImageUpload" class="mb-4">
+                        <label for="partnerIdFileSingle" class="block text-sm font-medium text-gray-700 mb-1">تحميل صورة الهوية:</label>
+                        <input type="file" id="partnerIdFileSingle" name="partnerIdFileSingle" accept="image/*" class="form-input w-full rounded-md p-2 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                    </div>
+
+                    <div id="partnerDualImageUpload" class="hidden grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label for="partnerIdFileFront" class="block text-sm font-medium text-gray-700 mb-1">صورة الهوية (الوجه الأمامي):</label>
+                            <input type="file" id="partnerIdFileFront" name="partnerIdFileFront" accept="image/*" class="form-input w-full rounded-md p-2 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                        </div>
+                        <div>
+                            <label for="partnerIdFileBack" class="block text-sm font-medium text-gray-700 mb-1">صورة الهوية (الوجه الخلفي):</label>
+                            <input type="file" id="partnerIdFileBack" name="partnerIdFileBack" accept="image/*" class="form-input w-full rounded-md p-2 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                        </div>
+                    </div>
+                    <img id="partnerIdPreview" src="#" alt="معاينة هوية الشريك" class="mt-2 rounded-md max-h-32 hidden mx-auto"/>
                 </div>
             </div>
 
             <h2 class="text-xl font-semibold text-gray-700 pt-4 border-t border-gray-300 mt-6">تفاصيل ممثل الشركة (الكفيل/الشريك الآخر)</h2>
-             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                     <label for="representativeName" class="block text-sm font-medium text-gray-700 mb-1">اسم ممثل الشركة:</label>
                     <input type="text" id="representativeName" name="representativeName" class="form-input w-full rounded-md p-2.5" placeholder="اسم ممثل الشركة (كما في الهوية)" required>
                 </div>
-                 <div>
-                    <label for="representativeIdFile" class="block text-sm font-medium text-gray-700 mb-1">صورة هوية ممثل الشركة:</label>
-                    <input type="file" id="representativeIdFile" name="representativeIdFile" accept="image/*" class="form-input w-full rounded-md p-2 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100">
-                    <img id="representativeIdPreview" src="#" alt="معاينة هوية الممثل" class="mt-2 rounded-md max-h-32 hidden"/>
+
+                <!-- Representative ID Upload Section -->
+                <div id="representativeIdUploadSection" class="col-span-full">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">صورة هوية ممثل الشركة:</label>
+                    <div class="radio-group mb-4">
+                        <label>
+                            <input type="radio" name="representativeIdUploadType" value="single" checked> صورة واحدة
+                        </label>
+                        <label>
+                            <input type="radio" name="representativeIdUploadType" value="dual"> صورتان (أمامية وخلفية)
+                        </label>
+                    </div>
+
+                    <div id="representativeSingleImageUpload" class="mb-4">
+                        <label for="representativeIdFileSingle" class="block text-sm font-medium text-gray-700 mb-1">تحميل صورة الهوية:</label>
+                        <input type="file" id="representativeIdFileSingle" name="representativeIdFileSingle" accept="image/*" class="form-input w-full rounded-md p-2 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100">
+                    </div>
+
+                    <div id="representativeDualImageUpload" class="hidden grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label for="representativeIdFileFront" class="block text-sm font-medium text-gray-700 mb-1">صورة الهوية (الوجه الأمامي):</label>
+                            <input type="file" id="representativeIdFileFront" name="representativeIdFileFront" accept="image/*" class="form-input w-full rounded-md p-2 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100">
+                        </div>
+                        <div>
+                            <label for="representativeIdFileBack" class="block text-sm font-medium text-gray-700 mb-1">صورة الهوية (الوجه الخلفي):</label>
+                            <input type="file" id="representativeIdFileBack" name="representativeIdFileBack" accept="image/*" class="form-input w-full rounded-md p-2 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100">
+                        </div>
+                    </div>
+                    <img id="representativeIdPreview" src="#" alt="معاينة هوية الممثل" class="mt-2 rounded-md max-h-32 hidden mx-auto"/>
                 </div>
             </div>
 
@@ -279,31 +340,122 @@
             return `${day}/${month}/${year}`;
         }
 
-        // Function to display image preview for form inputs
-        function setupImagePreview(fileInputId, previewImageId) {
-            const fileInput = document.getElementById(fileInputId);
-            const previewImage = document.getElementById(previewImageId);
-            if (fileInput && previewImage) {
-                fileInput.addEventListener('change', function(event) {
-                    const file = event.target.files[0];
-                    if (file) {
-                        const reader = new FileReader();
-                        reader.onload = function(e) {
-                            previewImage.src = e.target.result;
-                            previewImage.classList.remove('hidden');
-                        }
-                        reader.readAsDataURL(file);
-                    } else {
-                        previewImage.src = "#";
-                        previewImage.classList.add('hidden');
-                    }
-                });
-            }
+        /**
+         * Reads a File object and returns its data URL.
+         * @param {File} file The file to read.
+         * @returns {Promise<string>} A promise that resolves with the data URL.
+         */
+        function readFileAsDataURL(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = (e) => resolve(e.target.result);
+                reader.onerror = (e) => reject(e);
+                reader.readAsDataURL(file);
+            });
         }
 
-        // Setup image previews for the file inputs
-        setupImagePreview('partnerIdFile', 'partnerIdPreview');
-        setupImagePreview('representativeIdFile', 'representativeIdPreview');
+        /**
+         * Merges two image data URLs vertically into a single data URL.
+         * The front image is placed on top, the back image on the bottom.
+         * @param {string} frontImageSrc The data URL of the front image.
+         * @param {string} backImageSrc The data URL of the back image.
+         * @returns {Promise<string>} A promise that resolves with the data URL of the merged image.
+         */
+        async function mergeImages(frontImageSrc, backImageSrc) {
+            return new Promise((resolve, reject) => {
+                const frontImg = new Image();
+                const backImg = new Image();
+                let imagesLoaded = 0;
+
+                const checkCompletion = () => {
+                    imagesLoaded++;
+                    if (imagesLoaded === 2) {
+                        // Both images loaded, proceed to merge
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+
+                        // Set canvas width to the maximum width of the two images
+                        canvas.width = Math.max(frontImg.width, backImg.width);
+                        // Set canvas height to the sum of the heights of the two images
+                        canvas.height = frontImg.height + backImg.height;
+
+                        // Draw front image at the top
+                        ctx.drawImage(frontImg, 0, 0, canvas.width, frontImg.height);
+                        // Draw back image below the front image
+                        ctx.drawImage(backImg, 0, frontImg.height, canvas.width, backImg.height);
+
+                        resolve(canvas.toDataURL('image/png'));
+                    }
+                };
+
+                frontImg.onload = checkCompletion;
+                frontImg.onerror = reject;
+                frontImg.src = frontImageSrc;
+
+                backImg.onload = checkCompletion;
+                backImg.onerror = reject;
+                backImg.src = backImageSrc;
+            });
+        }
+
+
+        /**
+         * Sets up image preview for a given input type (single or dual).
+         * @param {string} uploadType 'single' or 'dual'
+         * @param {HTMLElement} singleFileInput The input element for a single file.
+         * @param {HTMLElement} frontFileInput The input element for the front image (dual mode).
+         * @param {HTMLElement} backFileInput The input element for the back image (dual mode).
+         * @param {HTMLElement} previewImage The img element to display the preview.
+         * @returns {Promise<string|null>} A promise that resolves with the data URL of the image (single or merged), or null if no valid image.
+         */
+        async function updateImagePreview(uploadType, singleFileInput, frontFileInput, backFileInput, previewImage) {
+            previewImage.src = "#"; // Clear previous preview
+            previewImage.classList.add('hidden');
+
+            let finalImageSrc = null;
+
+            if (uploadType === 'single') {
+                const file = singleFileInput.files[0];
+                if (file) {
+                    try {
+                        finalImageSrc = await readFileAsDataURL(file);
+                    } catch (error) {
+                        console.error("Error reading single file:", error);
+                    }
+                }
+            } else if (uploadType === 'dual') {
+                const frontFile = frontFileInput.files[0];
+                const backFile = backFileInput.files[0];
+
+                if (frontFile && backFile) {
+                    try {
+                        const frontSrc = await readFileAsDataURL(frontFile);
+                        const backSrc = await readFileAsDataURL(backFile);
+                        finalImageSrc = await mergeImages(frontSrc, backSrc);
+                    } catch (error) {
+                        console.error("Error merging dual images:", error);
+                    }
+                } else if (frontFile) { // If only front is uploaded
+                    try {
+                        finalImageSrc = await readFileAsDataURL(frontFile);
+                    } catch (error) {
+                        console.error("Error reading front file only:", error);
+                    }
+                } else if (backFile) { // If only back is uploaded
+                    try {
+                        finalImageSrc = await readFileAsDataURL(backFile);
+                    } catch (error) {
+                        console.error("Error reading back file only:", error);
+                    }
+                }
+            }
+
+            if (finalImageSrc) {
+                previewImage.src = finalImageSrc;
+                previewImage.classList.remove('hidden');
+            }
+            return finalImageSrc;
+        }
 
         // Get DOM elements
         const nocForm = document.getElementById('nocForm');
@@ -311,8 +463,109 @@
         const letterPreviewContainer = document.getElementById('letterPreviewContainer');
         const printLetterButton = document.getElementById('printLetterButton');
 
+        // Partner ID Elements
+        const partnerIdUploadTypeRadios = document.querySelectorAll('input[name="partnerIdUploadType"]');
+        const partnerSingleImageUploadDiv = document.getElementById('partnerSingleImageUpload');
+        const partnerDualImageUploadDiv = document.getElementById('partnerDualImageUpload');
+        const partnerIdFileSingle = document.getElementById('partnerIdFileSingle');
+        const partnerIdFileFront = document.getElementById('partnerIdFileFront');
+        const partnerIdFileBack = document.getElementById('partnerIdFileBack');
+        const partnerIdPreview = document.getElementById('partnerIdPreview');
+
+        // Representative ID Elements
+        const representativeIdUploadTypeRadios = document.querySelectorAll('input[name="representativeIdUploadType"]');
+        const representativeSingleImageUploadDiv = document.getElementById('representativeSingleImageUpload');
+        const representativeDualImageUploadDiv = document.getElementById('representativeDualImageUpload');
+        const representativeIdFileSingle = document.getElementById('representativeIdFileSingle');
+        const representativeIdFileFront = document.getElementById('representativeIdFileFront');
+        const representativeIdFileBack = document.getElementById('representativeIdFileBack');
+        const representativeIdPreview = document.getElementById('representativeIdPreview');
+
+        let partnerIdFinalImageSrc = null;
+        let representativeIdFinalImageSrc = null;
+
+
+        // Function to handle image type selection for Partner
+        function handlePartnerIdUploadTypeChange() {
+            const selectedType = document.querySelector('input[name="partnerIdUploadType"]:checked').value;
+
+            // Clear previous files and hide inputs
+            partnerIdFileSingle.value = '';
+            partnerIdFileFront.value = '';
+            partnerIdFileBack.value = '';
+            partnerIdPreview.src = '#';
+            partnerIdPreview.classList.add('hidden');
+            partnerIdFinalImageSrc = null; // Clear the stored image source
+
+            if (selectedType === 'single') {
+                partnerSingleImageUploadDiv.classList.remove('hidden');
+                partnerDualImageUploadDiv.classList.add('hidden');
+            } else {
+                partnerSingleImageUploadDiv.classList.add('hidden');
+                partnerDualImageUploadDiv.classList.remove('hidden');
+            }
+        }
+
+        // Function to handle image type selection for Representative
+        function handleRepresentativeIdUploadTypeChange() {
+            const selectedType = document.querySelector('input[name="representativeIdUploadType"]:checked').value;
+
+            // Clear previous files and hide inputs
+            representativeIdFileSingle.value = '';
+            representativeIdFileFront.value = '';
+            representativeIdFileBack.value = '';
+            representativeIdPreview.src = '#';
+            representativeIdPreview.classList.add('hidden');
+            representativeIdFinalImageSrc = null; // Clear the stored image source
+
+            if (selectedType === 'single') {
+                representativeSingleImageUploadDiv.classList.remove('hidden');
+                representativeDualImageUploadDiv.classList.add('hidden');
+            } else {
+                representativeSingleImageUploadDiv.classList.add('hidden');
+                representativeDualImageUploadDiv.classList.remove('hidden');
+            }
+        }
+
+
+        // Event listeners for radio button changes
+        partnerIdUploadTypeRadios.forEach(radio => radio.addEventListener('change', handlePartnerIdUploadTypeChange));
+        representativeIdUploadTypeRadios.forEach(radio => radio.addEventListener('change', handleRepresentativeIdUploadTypeChange));
+
+        // Initial setup on load to ensure correct inputs are visible
+        handlePartnerIdUploadTypeChange();
+        handleRepresentativeIdUploadTypeChange();
+
+        // Event listeners for file input changes to update previews
+        partnerIdFileSingle.addEventListener('change', async () => {
+            const selectedType = document.querySelector('input[name="partnerIdUploadType"]:checked').value;
+            partnerIdFinalImageSrc = await updateImagePreview(selectedType, partnerIdFileSingle, partnerIdFileFront, partnerIdFileBack, partnerIdPreview);
+        });
+        partnerIdFileFront.addEventListener('change', async () => {
+            const selectedType = document.querySelector('input[name="partnerIdUploadType"]:checked').value;
+            partnerIdFinalImageSrc = await updateImagePreview(selectedType, partnerIdFileSingle, partnerIdFileFront, partnerIdFileBack, partnerIdPreview);
+        });
+        partnerIdFileBack.addEventListener('change', async () => {
+            const selectedType = document.querySelector('input[name="partnerIdUploadType"]:checked').value;
+            partnerIdFinalImageSrc = await updateImagePreview(selectedType, partnerIdFileSingle, partnerIdFileFront, partnerIdFileBack, partnerIdPreview);
+        });
+
+        representativeIdFileSingle.addEventListener('change', async () => {
+            const selectedType = document.querySelector('input[name="representativeIdUploadType"]:checked').value;
+            representativeIdFinalImageSrc = await updateImagePreview(selectedType, representativeIdFileSingle, representativeIdFileFront, representativeIdFileBack, representativeIdPreview);
+        });
+        representativeIdFileFront.addEventListener('change', async () => {
+            const selectedType = document.querySelector('input[name="representativeIdUploadType"]:checked').value;
+            representativeIdFinalImageSrc = await updateImagePreview(selectedType, representativeIdFileSingle, representativeIdFileFront, representativeIdFileBack, representativeIdPreview);
+        });
+        representativeIdFileBack.addEventListener('change', async () => {
+            const selectedType = document.querySelector('input[name="representativeIdUploadType"]:checked').value;
+            representativeIdFinalImageSrc = await updateImagePreview(selectedType, representativeIdFileSingle, representativeIdFileFront, representativeIdFileBack, representativeIdPreview);
+        });
+
+
         // Event listener for form submission
-        nocForm.addEventListener('submit', function(event) {
+        nocForm.addEventListener('submit', async function(event) {
             event.preventDefault(); // Prevent default form submission
 
             // Get form values
@@ -329,16 +582,12 @@
             const partnerSalutation = partnerGender === 'male' ? 'السيد' : 'السيدة';
             const currentDate = getCurrentArabicDate();
 
-            // Get image data URLs from the form previews
-            const partnerIdPreviewSrc = document.getElementById('partnerIdPreview').src;
-            const representativeIdPreviewSrc = document.getElementById('representativeIdPreview').src;
-
-            // Create image tags for the letter, or placeholder text if no image is uploaded
-            const partnerIdImageTag = (partnerIdPreviewSrc && partnerIdPreviewSrc !== '#' && !partnerIdPreviewSrc.endsWith('/') && !partnerIdPreviewSrc.startsWith('file://'))
-                ? `<img src="${partnerIdPreviewSrc}" alt="هوية الشريك">`
+            // Use the globally stored final image sources
+            const partnerIdImageTag = (partnerIdFinalImageSrc && partnerIdFinalImageSrc !== '#')
+                ? `<img src="${partnerIdFinalImageSrc}" alt="هوية الشريك">`
                 : '<div>(لم يتم رفع صورة هوية الشريك)</div>';
-            const representativeIdImageTag = (representativeIdPreviewSrc && representativeIdPreviewSrc !== '#' && !representativeIdPreviewSrc.endsWith('/') && !representativeIdPreviewSrc.startsWith('file://'))
-                ? `<img src="${representativeIdPreviewSrc}" alt="هوية ممثل الشركة">`
+            const representativeIdImageTag = (representativeIdFinalImageSrc && representativeIdFinalImageSrc !== '#')
+                ? `<img src="${representativeIdFinalImageSrc}" alt="هوية ممثل الشركة">`
                 : '<div>(لم يتم رفع صورة هوية الممثل)</div>';
 
             // Define signature line texts
