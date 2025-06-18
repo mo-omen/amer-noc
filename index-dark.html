@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منشئ المستندات الذكي</title>
+    <title>منشئ المستندات الذكي - الوضع الليلي</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,10 +13,8 @@
             font-family: 'Tajawal', sans-serif;
             margin: 0;
             padding: 0;
-            background: linear-gradient(-45deg, #FAF0E6, #d9eafc, #b2e1ff, #a0d2eb);
-            background-size: 400% 400%;
-            animation: gradientBG 25s ease infinite, fadeInAnimation 0.8s ease-in-out;
-            color: #0a2c4c;
+            background-color: #0d1117;
+            color: #c9d1d9;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -25,6 +23,7 @@
             text-align: center;
             overflow: hidden;
             position: relative;
+            animation: fadeInAnimation 0.8s ease-in-out;
         }
 
         /* --- Page Transition Animations --- */
@@ -40,60 +39,24 @@
             animation: fadeOutAnimation 0.6s ease-in-out forwards;
         }
 
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        /* Cloud Styles */
-        .cloud-container {
+        /* --- Animated Background --- */
+        #canvas-background {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            pointer-events: none;
             z-index: 0;
-        }
-        .cloud {
-            position: absolute;
-            background: rgba(255, 255, 255, 0.6);
-            border-radius: 50%;
-            opacity: 0.7;
-            filter: blur(5px);
-            animation-timing-function: linear;
-            animation-iteration-count: infinite;
-        }
-        .cloud.x1 { width: 200px; height: 60px; top: 10%; animation-name: moveClouds1; animation-duration: 60s; }
-        .cloud.x2 { width: 250px; height: 70px; top: 25%; left: -250px; animation-name: moveClouds2; animation-duration: 80s; transform: scale(0.8); opacity: 0.5; }
-        .cloud.x3 { width: 180px; height: 50px; top: 60%; left: -180px; animation-name: moveClouds1; animation-duration: 70s; transform: scale(0.6); opacity: 0.6; }
-        .cloud.x4 { width: 300px; height: 80px; top: 75%; left: -300px; animation-name: moveClouds2; animation-duration: 90s; transform: scale(0.9); opacity: 0.4; }
-        .cloud.x5 { width: 150px; height: 40px; top: 40%; left: -150px; animation-name: moveClouds1; animation-duration: 100s; transform: scale(0.5); opacity: 0.8; }
-        .cloud:before, .cloud:after { content: ''; position: absolute; background: rgba(255, 255, 255, 0.6); border-radius: 50%; opacity: inherit; }
-        .cloud:before { width: 100px; height: 100px; top: -50px; left: 50px; }
-        .cloud:after { width: 150px; height: 150px; top: -70px; right: 30px; }
-        .cloud.x1:before { width: 120px; height: 120px; top: -60px; left: 40px; }
-        .cloud.x1:after  { width: 100px; height: 100px; top: -40px; right: 20px; }
-        .cloud.x2:before { width: 150px; height: 150px; top: -75px; left: 60px; }
-        .cloud.x2:after  { width: 120px; height: 120px; top: -50px; right: 40px; }
-
-        @keyframes moveClouds1 {
-            0% { transform: translateX(-250px) scale(var(--scale,1)); }
-            100% { transform: translateX(calc(100vw + 250px)) scale(var(--scale,1)); }
-        }
-        @keyframes moveClouds2 {
-            0% { transform: translateX(-300px) scale(var(--scale,1)); }
-            100% { transform: translateX(calc(100vw + 300px)) scale(var(--scale,1)); }
         }
 
         .page-container {
-            background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(5px) saturate(120%);
-            -webkit-backdrop-filter: blur(5px) saturate(120%);
+            background: rgba(22, 27, 34, 0.6);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             border-radius: 20px;
             padding: 2rem 3rem;
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(48, 54, 61, 0.5);
             max-width: 900px;
             width: 90%;
             position: relative;
@@ -101,31 +64,36 @@
         }
         
         .header { text-align: center; }
-        .header-logo { max-width: 180px; max-height: 70px; margin: 0 auto 1rem auto; display: block; }
-        .header h1 { font-size: 2.8rem; font-weight: 700; margin-bottom: 0.75rem; color: #003366; text-shadow: 1px 1px 2px rgba(0,0,0,0.1); }
-        .header p { font-size: 1.25rem; margin-bottom: 2.5rem; color: #004c99; }
+        .header-logo { max-width: 180px; max-height: 70px; margin: 0 auto 1rem auto; display: block; filter: invert(0.8); }
+        .header h1 { font-size: 2.8rem; font-weight: 700; margin-bottom: 0.75rem; color: #58a6ff; text-shadow: 1px 1px 2px rgba(0,0,0,0.2); }
+        .header p { font-size: 1.25rem; margin-bottom: 2.5rem; color: #8b949e; }
+        
         .document-selector { display: flex; flex-wrap: wrap; justify-content: center; gap: 2.5rem; }
         .document-card {
-            background: rgba(255, 255, 255, 0.6);
-            backdrop-filter: blur(12px) saturate(150%);
-            -webkit-backdrop-filter: blur(12px) saturate(150%);
+            background: rgba(13, 17, 23, 0.5);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             border-radius: 15px;
-            border: 1px solid rgba(209, 213, 219, 0.4);
-            box-shadow: 0 8px 24px 0 rgba(31, 38, 135, 0.17);
+            border: 1px solid rgba(48, 54, 61, 0.6);
+            box-shadow: 0 8px 24px 0 rgba(0, 0, 0, 0.2);
             padding: 2rem;
             width: 320px;
             text-decoration: none;
             color: inherit;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
-        .document-card:hover { transform: translateY(-10px) scale(1.03); box-shadow: 0 12px 32px 0 rgba(31, 38, 135, 0.25); }
-        .document-card h2 { font-size: 1.6rem; font-weight: 700; margin-bottom: 1rem; color: #003366; }
-        .document-card .icon { font-size: 3rem; margin-bottom: 1rem; color: #3b82f6; }
-        .document-card p.description { font-size: 1rem; color: #374151; line-height: 1.6; }
-        
+        .document-card:hover {
+            transform: translateY(-10px) scale(1.03);
+            box-shadow: 0 12px 32px 0 rgba(0, 0, 0, 0.4);
+            border-color: rgba(88, 166, 255, 0.5);
+        }
+        .document-card h2 { font-size: 1.6rem; font-weight: 700; margin-bottom: 1rem; color: #58a6ff; }
+        .document-card .icon { font-size: 3rem; margin-bottom: 1rem; color: #58a6ff; }
+        .document-card p.description { font-size: 1rem; color: #8b949e; line-height: 1.6; }
+
         .theme-switcher {
             position: absolute;
             top: 20px;
@@ -134,11 +102,11 @@
         }
 
         .theme-button {
-             background: rgba(255, 255, 255, 0.4);
-            border: 1px solid rgba(209, 213, 219, 0.5);
+            background: rgba(33, 38, 45, 0.7);
+            border: 1px solid rgba(48, 54, 61, 0.8);
             padding: 0.5rem 1rem;
             border-radius: 8px;
-            color: #003366;
+            color: #58a6ff;
             font-weight: 600;
             text-decoration: none;
             transition: all 0.3s ease;
@@ -146,15 +114,15 @@
         }
 
         .theme-button:hover {
-            background: rgba(255, 255, 255, 0.8);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            background: rgba(48, 54, 61, 0.9);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
         }
 
         /* --- Elegant Footer Style --- */
         .page-footer {
             margin-top: 3rem;
             padding-top: 1.5rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.3);
+            border-top: 1px solid rgba(48, 54, 61, 0.5);
             width: 100%;
             max-width: 900px;
             display: flex;
@@ -164,7 +132,7 @@
         }
         .page-footer p {
             font-size: 0.95rem;
-            color: #004c99;
+            color: #8b949e;
         }
         .github-link {
             display: inline-flex;
@@ -172,13 +140,13 @@
             gap: 0.5rem;
             font-size: 1rem;
             font-weight: 700;
-            color: #004c99;
+            color: #8b949e;
             text-decoration: none;
             transition: color 0.4s ease, text-shadow 0.4s ease;
         }
         .github-link:hover {
-            color: #003366;
-            text-shadow: 0 0 8px rgba(0, 51, 102, 0.5);
+            color: #58a6ff;
+            text-shadow: 0 0 8px rgba(88, 166, 255, 0.6);
         }
         .github-link svg {
             width: 22px;
@@ -190,7 +158,6 @@
             transform: scale(1.1);
         }
 
-        /* Responsive adjustments */
         @media (max-width: 768px) {
             .header h1 { font-size: 2.2rem; }
             .header p { font-size: 1.1rem; }
@@ -201,16 +168,10 @@
     </style>
 </head>
 <body>
-    <div class="cloud-container">
-        <div class="cloud x1"></div>
-        <div class="cloud x2"></div>
-        <div class="cloud x3"></div>
-        <div class="cloud x4"></div>
-        <div class="cloud x5"></div>
-    </div>
+    <canvas id="canvas-background"></canvas>
     
     <div class="theme-switcher">
-        <a href="index-dark.html" class="theme-button page-link">الوضع الليلي</a>
+        <a href="index.html" class="theme-button page-link">الوضع النهاري</a>
     </div>
 
     <div class="page-container">
@@ -238,13 +199,99 @@
         <footer class="page-footer">
             <p>تم إنشاؤه بواسطة</p>
             <a href="https://github.com/mo-omen/" target="_blank" rel="noopener noreferrer" class="github-link">
-                <!-- GitHub Logo SVG -->
                 <svg viewBox="0 0 16 16" version="1.1" aria-hidden="true"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>
                 <span>مؤمن الحاج</span>
             </a>
         </footer>
     </div>
     <script>
+        // --- Animated Background Script ---
+        const canvas = document.getElementById('canvas-background');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        let particlesArray;
+
+        class Particle {
+            constructor(x, y, directionX, directionY, size, color) {
+                this.x = x;
+                this.y = y;
+                this.directionX = directionX;
+                this.directionY = directionY;
+                this.size = size;
+                this.color = color;
+            }
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+            }
+            update() {
+                if (this.x > canvas.width || this.x < 0) {
+                    this.directionX = -this.directionX;
+                }
+                if (this.y > canvas.height || this.y < 0) {
+                    this.directionY = -this.directionY;
+                }
+                this.x += this.directionX;
+                this.y += this.directionY;
+                this.draw();
+            }
+        }
+
+        function init() {
+            particlesArray = [];
+            let numberOfParticles = (canvas.height * canvas.width) / 9000;
+            for (let i = 0; i < numberOfParticles; i++) {
+                let size = (Math.random() * 2) + 1;
+                let x = (Math.random() * ((innerWidth - size * 2) - (size * 2)) + size * 2);
+                let y = (Math.random() * ((innerHeight - size * 2) - (size * 2)) + size * 2);
+                let directionX = (Math.random() * .4) - .2;
+                let directionY = (Math.random() * .4) - .2;
+                let color = 'rgba(88, 166, 255, 0.2)';
+                particlesArray.push(new Particle(x, y, directionX, directionY, size, color));
+            }
+        }
+
+        function connect() {
+            let opacityValue = 1;
+            for (let a = 0; a < particlesArray.length; a++) {
+                for (let b = a; b < particlesArray.length; b++) {
+                    let distance = ((particlesArray[a].x - particlesArray[b].x) * (particlesArray[a].x - particlesArray[b].x)) +
+                                   ((particlesArray[a].y - particlesArray[b].y) * (particlesArray[a].y - particlesArray[b].y));
+                    if (distance < (canvas.width / 7) * (canvas.height / 7)) {
+                        opacityValue = 1 - (distance / 20000);
+                        ctx.strokeStyle = `rgba(88, 166, 255, ${opacityValue})`;
+                        ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
+                        ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            ctx.clearRect(0, 0, innerWidth, innerHeight);
+            for (let i = 0; i < particlesArray.length; i++) {
+                particlesArray[i].update();
+            }
+            connect();
+        }
+
+        window.addEventListener('resize', () => {
+            canvas.width = innerWidth;
+            canvas.height = innerHeight;
+            init();
+        });
+
+        init();
+        animate();
+
         // --- Page Transition Script ---
         document.addEventListener('DOMContentLoaded', () => {
             const pageLinks = document.querySelectorAll('.page-link');
