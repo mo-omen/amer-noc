@@ -92,7 +92,6 @@
         }
         .back-button:hover .back-button-arrow { transform: translateX(3px); }
 
-        /* --- Elegant Footer Style --- */
         .unified-footer {
             margin-top: 1.5rem;
             padding-top: 1rem;
@@ -137,8 +136,8 @@
         }
         #letterOutput p { text-align: right; }
         .letterhead { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; padding-bottom: 1rem; min-height: 100px; }
-        .letterhead-logo { max-height: 96px; max-width: 192px; object-fit: contain; }
-        .gdrfa-logo-specific { max-height: 106px; max-width: 211px; object-fit: contain; }
+        .letterhead-logo { max-height: 91px; max-width: 182px; object-fit: contain; }
+        .gdrfa-logo-specific { max-height: 133px; max-width: 264px; object-fit: contain; }
         .letterhead .logo-container { display: flex; align-items: center; }
         #letterOutput .date-line { text-align: right; font-size: 11pt; font-weight: bold; margin-bottom: 1rem; }
         #letterOutput .subject-line { font-weight: bold; text-align: center; margin-top: 0.5rem; margin-bottom: 1.5rem; font-size: 16pt; text-decoration: underline; color: red; }
@@ -150,6 +149,74 @@
         #letterOutput .new-signature-area { margin-top: 1rem; text-align: right; padding-bottom: 2rem; }
         #letterOutput .new-signature-area p { font-size: 12pt; margin-bottom: 0.5rem; }
         .hidden { display: none; }
+
+        /* --- Print Modal Styles --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
+        }
+        .modal-overlay.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 600px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            transform: scale(0.9);
+            transition: transform 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+        }
+        .modal-overlay.visible .modal-content {
+            transform: scale(1);
+        }
+        .modal-image {
+            max-width: 100%;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            margin-top: 1rem;
+            margin-bottom: 1.5rem;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .modal-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        /* --- Pulsing Glow Animation --- */
+        @keyframes pulse-glow {
+            0%, 100% {
+                color: #3b82f6;
+                text-shadow: 0 0 4px rgba(96, 165, 250, 0.4);
+            }
+            50% {
+                color: #60a5fa;
+                text-shadow: 0 0 12px rgba(96, 165, 250, 0.8);
+            }
+        }
+        .pulsing-glow {
+            font-weight: 700;
+            animation: pulse-glow 2.5s infinite ease-in-out;
+        }
+
 
         @media print {
             body { background: none; font-family: 'Tajawal', sans-serif; }
@@ -227,6 +294,7 @@
                     طباعة التعهد
                 </button>
             </div>
+
         </form>
 
         <footer class="unified-footer">
@@ -241,6 +309,20 @@
     <div id="letterPreviewContainer" class="w-full glass-effect mt-8">
         <div id="letterOutput" dir="rtl"></div>
     </div>
+
+    <!-- Print Modal HTML -->
+    <div id="printModal" class="modal-overlay no-print">
+        <div class="modal-content">
+            <h2 class="text-xl font-bold text-gray-800">إرشادات الطباعة</h2>
+            <p class="text-gray-600 mt-2">للحصول على أفضل نتيجة، يرجى تعيين خيار الهوامش <span class="pulsing-glow">Margins</span> إلى بدون <span class="pulsing-glow">None</span> في إعدادات الطباعة كما هو موضح.</p>
+            <img src="src/print-setting.jpg" alt="Print Settings Guide" class="modal-image" onerror="this.alt='Please set margins to None in print settings.'; this.style.display='none';">
+            <div class="modal-buttons">
+                <button type="button" id="closeModalButton" class="btn-secondary font-semibold py-2 px-5 rounded-lg">إغلاق</button>
+                <button type="button" id="proceedToPrintButton" class="btn-primary text-white font-semibold py-2 px-5 rounded-lg">متابعة للطباعة</button>
+            </div>
+        </div>
+    </div>
+
 
     <script>
         function getCurrentArabicDate() {
@@ -258,6 +340,11 @@
         const declarantRelationshipSelect = document.getElementById('declarantRelationship');
         const otherRelationshipContainer = document.getElementById('otherRelationshipContainer');
         const otherRelationshipInput = document.getElementById('otherRelationship');
+
+        // Modal elements
+        const printModal = document.getElementById('printModal');
+        const closeModalButton = document.getElementById('closeModalButton');
+        const proceedToPrintButton = document.getElementById('proceedToPrintButton');
 
         declarantRelationshipSelect.addEventListener('change', function() {
             if (this.value === 'أخرى') {
@@ -328,8 +415,30 @@
             letterPreviewContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
         });
 
+        // Event listener for the main "Print" button to open the modal
         printLetterButton.addEventListener('click', function() {
-            window.print();
+            printModal.classList.add('visible');
+        });
+        
+        // Event listener for the "Close" button in the modal
+        closeModalButton.addEventListener('click', function() {
+            printModal.classList.remove('visible');
+        });
+
+        // Event listener to close the modal when clicking the overlay
+        printModal.addEventListener('click', function(event) {
+            if (event.target === printModal) {
+                printModal.classList.remove('visible');
+            }
+        });
+
+        // Event listener for the "Proceed to Print" button in the modal
+        proceedToPrintButton.addEventListener('click', function() {
+            printModal.classList.remove('visible');
+            // A short delay to allow the modal to close before opening the print dialog
+            setTimeout(() => {
+                window.print();
+            }, 100);
         });
         
         // --- Page Transition Script ---
