@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
+        /* --- Base and Animation Styles --- */
         body {
             font-family: 'Tajawal', sans-serif;
             background: linear-gradient(135deg, #f0f4f8 0%, #d9e2ec 100%);
@@ -16,7 +17,6 @@
             animation: fadeInAnimation 0.8s ease-in-out;
         }
 
-        /* --- Page Transition Animations --- */
         @keyframes fadeInAnimation {
             from { opacity: 0; transform: translateY(-10px); }
             to { opacity: 1; transform: translateY(0); }
@@ -29,6 +29,7 @@
             animation: fadeOutAnimation 0.6s ease-in-out forwards;
         }
 
+        /* --- Form & UI Element Styles --- */
         .glass-effect {
             background: rgba(255, 255, 255, 0.6);
             backdrop-filter: blur(12px) saturate(150%);
@@ -44,7 +45,7 @@
         }
         .form-input:focus, .form-select:focus {
             background-color: rgba(255, 255, 255, 1);
-            border-color: #60a5fa; /* Tailwind blue-400 */
+            border-color: #60a5fa;
             box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.3);
         }
         .btn-primary {
@@ -57,15 +58,14 @@
             box-shadow: 0 6px 20px 0 rgba(59, 130, 246, 0.4);
         }
         .btn-secondary {
-            background-color: #9ca3af; /* Tailwind gray-400 */
+            background-color: #9ca3af;
             color: white;
-             transition: all 0.3s ease;
+            transition: all 0.3s ease;
         }
         .btn-secondary:hover {
-            background-color: #6b7280; /* Tailwind gray-500 */
+            background-color: #6b7280;
             transform: translateY(-1px);
         }
-        
         .back-button {
             display: inline-flex;
             align-items: center;
@@ -74,7 +74,7 @@
             background-color: rgba(255, 255, 255, 0.5);
             border: 1px solid rgba(209, 213, 219, 0.4);
             border-radius: 8px;
-            color: #374151; /* gray-700 */
+            color: #374151;
             font-weight: 600;
             text-decoration: none;
             transition: all 0.2s ease-in-out;
@@ -93,146 +93,89 @@
         .back-button:hover .back-button-arrow {
             transform: translateX(3px);
         }
+        .hidden { display: none; }
 
-        /* --- Elegant Footer Style --- */
-        .unified-footer {
-            margin-top: 1.5rem;
-            padding-top: 1rem;
-            border-top: 1px solid rgba(209, 213, 219, 0.5);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 0.75rem;
-            font-size: 0.9rem;
-            color: #4b5563;
+        /* --- A4 Preview & Letter Styling (FIXED) --- */
+        #letterPreviewContainer {
+            display: none;
+            margin-top: 2rem;
+            padding: 2rem;
+            background-color: #e2e8f0; /* Neutral background to highlight the white paper */
         }
-        .github-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 1rem;
-            font-weight: 700;
-            color: #4b5563; /* Tailwind gray-600 */
-            text-decoration: none;
-            transition: color 0.4s ease, text-shadow 0.4s ease;
-        }
-        .github-link:hover {
-            color: #3b82f6; /* Tailwind blue-500 */
-            text-shadow: 0 0 8px rgba(59, 130, 246, 0.5);
-        }
-        .github-link svg {
-            width: 22px;
-            height: 22px;
-            fill: currentColor;
-            transition: transform 0.4s ease;
-        }
-        .github-link:hover svg {
-            transform: scale(1.1);
-        }
-        
-        /* A4 Preview Styling */
-        #letterPreviewContainer { display: none; margin-top: 2rem; padding: 2rem; }
         #letterOutput {
-            background-color: white; width: 210mm; min-height: 297mm;
-            padding: 20mm 15mm; margin: 0 auto; box-shadow: 0 0 15px rgba(0,0,0,0.2);
-            color: black; font-size: 12pt; line-height: 1.8; position: relative;
-            display: flex; flex-direction: column;
+            background-color: white;
+            width: 210mm;
+            height: 297mm; /* Use fixed height for A4 */
+            padding: 20mm 15mm;
+            margin: 0 auto;
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            color: black;
+            font-size: 12pt;
+            line-height: 1.8;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            box-sizing: border-box; /* CRITICAL: Ensures padding is inside the width/height */
+            overflow: hidden; /* CRITICAL: Prevents minor overflows from creating a second page */
         }
         #letterOutput h1, #letterOutput h2, #letterOutput p, #letterOutput div:not(.id-images-container):not(.image-signature-block) { text-align: right; }
         #letterOutput .date-line { text-align: left; font-size: 11pt; margin-bottom: 1.5rem; }
         #letterOutput .subject-line { font-weight: bold; text-align: center; margin-top: 1rem; margin-bottom: 1.5rem; font-size: 14pt; }
         #letterOutput .main-content { flex-grow: 1; }
-        #letterOutput .signature-area { margin-top: 2rem; text-align: left; padding-left: 1cm; }
+        #letterOutput .signature-area { margin-top: 1rem; text-align: left; padding-left: 1cm; }
         #letterOutput .id-images-container { margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid #eee; display: flex; justify-content: space-around; align-items: flex-start; gap: 1rem; width: 100%; }
         .image-signature-block { display: flex; flex-direction: column; align-items: center; text-align: center; width: 48%; }
-        /* Increased image size */
-        .image-signature-block img { max-width: 100%; max-height: 230px; border: 1px solid #ddd; object-fit: contain; margin-bottom: 0.5rem; border-radius: 4px; }
+        /* EDITED: Increased image size by another 15% */
+        .image-signature-block img { max-width: 100%; max-height: 318px; border: 1px solid #ddd; object-fit: contain; margin-bottom: 0.5rem; border-radius: 4px; }
         .signature-line { font-size: 10pt; color: #333; margin-top: 0.5rem; width: 100%; line-height: 1.4; }
         #letterOutput .id-images-container div > div:first-child { font-size: 10pt; color: #777; padding: 10px; border: 1px dashed #ccc; min-height: 120px; display: flex; align-items: center; justify-content: center; width: 100%; max-width: 250px; margin: 0 auto 0.5rem auto; }
-        .radio-group label { display: inline-flex; align-items: center; margin-right: 1.5rem; cursor: pointer; font-weight: 500; color: #4b5563; }
-        .radio-group input[type="radio"] { margin-left: 0.5rem; accent-color: #3b82f6; }
-        .hidden { display: none; }
 
-        /* --- Print Modal Styles --- */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.6);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.4s ease, visibility 0.4s ease;
-        }
-        .modal-overlay.visible {
-            opacity: 1;
-            visibility: visible;
-        }
-        .modal-content {
-            background: white;
-            padding: 2rem;
-            border-radius: 12px;
-            width: 90%;
-            max-width: 600px;
-            text-align: center;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-            transform: scale(0.9);
-            transition: transform 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28);
-        }
-        .modal-overlay.visible .modal-content {
-            transform: scale(1);
-        }
-        .modal-image {
-            max-width: 100%;
-            border-radius: 8px;
-            border: 1px solid #ddd;
-            margin-top: 1rem;
-            margin-bottom: 1.5rem;
-            display: block;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        .modal-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            margin-top: 1.5rem;
-        }
-        
-        /* --- Pulsing Glow Animation --- */
-        @keyframes pulse-glow {
-            0%, 100% {
-                color: #3b82f6;
-                text-shadow: 0 0 4px rgba(96, 165, 250, 0.4);
-            }
-            50% {
-                color: #60a5fa;
-                text-shadow: 0 0 12px rgba(96, 165, 250, 0.8);
-            }
-        }
-        .pulsing-glow {
-            font-weight: 700;
-            animation: pulse-glow 2.5s infinite ease-in-out;
+        /* --- Print Styles (FIXED) --- */
+        @page {
+            size: A4;
+            margin: 0; /* Removes browser print margins, we use padding on #letterOutput instead */
         }
 
         @media print {
-            body { background: none; font-family: 'Tajawal', sans-serif; }
-            .no-print { display: none !important; }
-            #letterPreviewContainer { display: block !important; margin: 0; padding: 0; }
-            #letterOutput { width: 100%; min-height: auto; height: auto; margin: 0; box-shadow: none; border: none; padding: 10mm 10mm; font-size: 12pt; line-height: 1.6; }
-            /* Adjusted print image size */
-            #letterOutput .id-images-container img { max-height: 210px; }
-            .image-signature-block { page-break-inside: avoid; }
+            body {
+                background: none;
+                margin: 0;
+                padding: 0;
+            }
+            .no-print {
+                display: none !important;
+            }
+            #letterPreviewContainer {
+                display: block !important;
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+                background: none;
+            }
+            #letterOutput {
+                margin: 0;
+                box-shadow: none;
+                border: none;
+                page-break-after: always;
+                overflow: hidden !important;
+            }
+            .image-signature-block {
+                page-break-inside: avoid; /* Prevents signature blocks from splitting across pages */
+            }
+            /* EDITED: Increased print image size by another 15% */
+            #letterOutput .id-images-container img {
+                max-height: 276px; /* Slightly smaller images for print to guarantee fit */
+            }
         }
     </style>
 </head>
 <body class="min-h-screen flex flex-col items-center justify-center p-4 sm:p-6 lg:p-8">
 
+    <!-- The form container, hidden during print -->
     <div class="w-full max-w-4xl no-print">
         <a href="index.html" class="back-button page-link">
             <span class="back-button-arrow">&rarr;</span>
@@ -246,6 +189,7 @@
         </h1>
 
         <form id="nocForm" class="space-y-6">
+             <!-- Form fields remain unchanged -->
              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                     <label for="companyName" class="block text-sm font-medium text-gray-700 mb-1">اسم الشركة:</label>
@@ -347,39 +291,16 @@
                 </button>
             </div>
         </form>
-
-        <footer class="unified-footer">
-            <p>تم إنشاؤه بواسطة</p>
-            <a href="https://github.com/mo-omen/" target="_blank" rel="noopener noreferrer" class="github-link">
-                <svg viewBox="0 0 16 16" version="1.1" aria-hidden="true"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>
-                <span>مؤمن الحاج</span>
-            </a>
-        </footer>
     </div>
 
-    <div id="letterPreviewContainer" class="w-full glass-effect mt-8">
+    <!-- The A4 preview area. This is what will be printed. -->
+    <div id="letterPreviewContainer" class="w-full mt-8">
         <div id="letterOutput" dir="rtl">
-            <!-- Letter content will be generated here -->
+            <!-- Letter content will be generated here by JavaScript -->
         </div>
     </div>
-
-    <!-- Print Modal HTML -->
-    <div id="printModal" class="modal-overlay no-print">
-        <div class="modal-content">
-            <h2 class="text-xl font-bold text-gray-800">إرشادات الطباعة</h2>
-            <p class="text-gray-600 mt-2">للحصول على أفضل نتيجة، يرجى تعيين خيار الهوامش <span class="pulsing-glow">Margins</span> إلى بدون <span class="pulsing-glow">None</span> في إعدادات الطباعة كما هو موضح.</p>
-            <!-- Changed image source to local path -->
-            <img src="src/print-setting.jpg" alt="Print Settings Guide" class="modal-image" onerror="this.alt='Please set margins to None in print settings.'; this.style.display='none';">
-            <div class="modal-buttons">
-                <button type="button" id="closeModalButton" class="btn-secondary font-semibold py-2 px-5 rounded-lg">إغلاق</button>
-                <button type="button" id="proceedToPrintButton" class="btn-primary text-white font-semibold py-2 px-5 rounded-lg">متابعة للطباعة</button>
-            </div>
-        </div>
-    </div>
-
 
     <script>
-        // --- SCRIPT IS UNCHANGED, KEEPING ORIGINAL FUNCTIONALITY ---
         function getCurrentArabicDate() {
             const today = new Date();
             const day = String(today.getDate()).padStart(2, '0');
@@ -471,11 +392,6 @@
         let partnerIdFinalImageSrc = null;
         let representativeIdFinalImageSrc = null;
 
-        // Modal elements
-        const printModal = document.getElementById('printModal');
-        const closeModalButton = document.getElementById('closeModalButton');
-        const proceedToPrintButton = document.getElementById('proceedToPrintButton');
-
         function handlePartnerIdUploadTypeChange() {
             const selectedType = document.querySelector('input[name="partnerIdUploadType"]:checked').value;
             partnerIdFileSingle.value = '';
@@ -518,6 +434,7 @@
         representativeIdFileSingle.addEventListener('change', async () => { representativeIdFinalImageSrc = await updateImagePreview(document.querySelector('input[name="representativeIdUploadType"]:checked').value, representativeIdFileSingle, representativeIdFileFront, representativeIdFileBack, representativeIdPreview); });
         representativeIdFileFront.addEventListener('change', async () => { representativeIdFinalImageSrc = await updateImagePreview(document.querySelector('input[name="representativeIdUploadType"]:checked').value, representativeIdFileSingle, representativeIdFileFront, representativeIdFileBack, representativeIdPreview); });
         representativeIdFileBack.addEventListener('change', async () => { representativeIdFinalImageSrc = await updateImagePreview(document.querySelector('input[name="representativeIdUploadType"]:checked').value, representativeIdFileSingle, representativeIdFileFront, representativeIdFileBack, representativeIdPreview); });
+        
         nocForm.addEventListener('submit', async function(event) {
             event.preventDefault();
             const companyName = document.getElementById('companyName').value.trim();
@@ -571,33 +488,11 @@
             letterPreviewContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
         });
 
-        // Event listener for the main "Print" button to open the modal
+        // EDITED: Changed print button to print directly
         printLetterButton.addEventListener('click', function() {
-            printModal.classList.add('visible');
+            window.print();
         });
 
-        // Event listener for the "Close" button in the modal
-        closeModalButton.addEventListener('click', function() {
-            printModal.classList.remove('visible');
-        });
-
-        // Event listener to close the modal when clicking the overlay
-        printModal.addEventListener('click', function(event) {
-            if (event.target === printModal) {
-                printModal.classList.remove('visible');
-            }
-        });
-
-        // Event listener for the "Proceed to Print" button in the modal
-        proceedToPrintButton.addEventListener('click', function() {
-            printModal.classList.remove('visible');
-            // A short delay to allow the modal to close before opening the print dialog
-            setTimeout(() => {
-                window.print();
-            }, 100);
-        });
-
-        // --- Page Transition Script ---
         document.addEventListener('DOMContentLoaded', () => {
             const pageLinks = document.querySelectorAll('.page-link');
             pageLinks.forEach(link => {
@@ -607,7 +502,7 @@
                     document.body.classList.add('fade-out');
                     setTimeout(() => {
                         window.location.href = destination;
-                    }, 600); // Match this duration with the fadeOutAnimation
+                    }, 600);
                 });
             });
         });
