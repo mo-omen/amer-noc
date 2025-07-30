@@ -251,16 +251,23 @@
                     <input type="text" id="declarantName" name="declarantName" class="form-input w-full rounded-md p-2.5" placeholder="مثال: محمد عبدالله الأحمد" required>
                 </div>
                 <div>
-                    <label for="declarantRelationship" class="block text-sm font-medium text-gray-700 mb-1">صلة القرابة بصاحبة الشأن:</label>
+                    <label for="declarantRelationship" class="block text-sm font-medium text-gray-700 mb-1">صلة القرابة بصاحب/ة الشأن:</label>
                     <select id="declarantRelationship" name="declarantRelationship" class="form-select w-full rounded-md p-2.5" required>
                         <option value="ابنتي">ابنتي</option>
                         <option value="أختي">أختي</option>
                         <option value="أخرى">أخرى</option>
                     </select>
                 </div>
-                 <div id="otherRelationshipContainer" class="md:col-span-2 hidden">
+                 <div id="otherRelationshipContainer" class="hidden">
                     <label for="otherRelationship" class="block text-sm font-medium text-gray-700 mb-1">يرجى تحديد صلة القرابة الأخرى:</label>
-                    <input type="text" id="otherRelationship" name="otherRelationship" class="form-input w-full rounded-md p-2.5" placeholder="مثال: ابنة أخي، قريبة من الدرجة الثانية">
+                    <input type="text" id="otherRelationship" name="otherRelationship" class="form-input w-full rounded-md p-2.5" placeholder="مثال: ابنة أخي، قريب من الدرجة الثانية">
+                </div>
+                <div id="otherGenderContainer" class="hidden">
+                    <label for="otherGender" class="block text-sm font-medium text-gray-700 mb-1">تحديد الجنس:</label>
+                    <select id="otherGender" name="otherGender" class="form-select w-full rounded-md p-2.5">
+                        <option value="الآنسة">الآنسة</option>
+                        <option value="السيد">السيد</option>
+                    </select>
                 </div>
                 <div>
                     <label for="declarantNationality" class="block text-sm font-medium text-gray-700 mb-1">جنسية مُقدم التعهد:</label>
@@ -273,16 +280,16 @@
             </div>
 
             <h2 class="text-xl font-semibold text-gray-700 pt-4 border-t border-gray-300 mt-6">
-                تفاصيل صاحبة الشأن
+                تفاصيل صاحب/ة الشأن
             </h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                    <label for="daughterName" class="block text-sm font-medium text-gray-700 mb-1">اسم صاحبة الشأن كاملاً:</label>
-                    <input type="text" id="daughterName" name="daughterName" class="form-input w-full rounded-md p-2.5" placeholder="مثال: فاطمة محمد الأحمد" required>
+                    <label for="concernedPersonName" class="block text-sm font-medium text-gray-700 mb-1">اسم صاحب/ة الشأن كاملاً:</label>
+                    <input type="text" id="concernedPersonName" name="concernedPersonName" class="form-input w-full rounded-md p-2.5" placeholder="مثال: فاطمة محمد الأحمد" required>
                 </div>
                 <div>
-                    <label for="daughterNationality" class="block text-sm font-medium text-gray-700 mb-1">جنسية صاحبة الشأن:</label>
-                    <input type="text" id="daughterNationality" name="daughterNationality" class="form-input w-full rounded-md p-2.5" placeholder="مثال: الإماراتية" required>
+                    <label for="concernedPersonNationality" class="block text-sm font-medium text-gray-700 mb-1">جنسية صاحب/ة الشأن:</label>
+                    <input type="text" id="concernedPersonNationality" name="concernedPersonNationality" class="form-input w-full rounded-md p-2.5" placeholder="مثال: الإماراتية" required>
                 </div>
             </div>
 
@@ -325,6 +332,7 @@
 
 
     <script>
+        // Function to get the current date in DD/MM/YYYY format
         function getCurrentArabicDate() {
             const today = new Date();
             const day = String(today.getDate()).padStart(2, '0');
@@ -333,6 +341,7 @@
             return `${day}/${month}/${year}`;
         }
 
+        // Getting form and output elements from the DOM
         const nocForm = document.getElementById('nocForm');
         const letterOutputDiv = document.getElementById('letterOutput');
         const letterPreviewContainer = document.getElementById('letterPreviewContainer');
@@ -340,44 +349,70 @@
         const declarantRelationshipSelect = document.getElementById('declarantRelationship');
         const otherRelationshipContainer = document.getElementById('otherRelationshipContainer');
         const otherRelationshipInput = document.getElementById('otherRelationship');
+        const otherGenderContainer = document.getElementById('otherGenderContainer');
+        const otherGenderSelect = document.getElementById('otherGender');
 
         // Modal elements
         const printModal = document.getElementById('printModal');
         const closeModalButton = document.getElementById('closeModalButton');
         const proceedToPrintButton = document.getElementById('proceedToPrintButton');
 
+        // Event listener to handle the visibility of "Other" relationship fields
         declarantRelationshipSelect.addEventListener('change', function() {
             if (this.value === 'أخرى') {
+                // If "Other" is selected, show the text input and gender dropdown
                 otherRelationshipContainer.classList.remove('hidden');
+                otherGenderContainer.classList.remove('hidden');
                 otherRelationshipInput.required = true;
+                otherGenderSelect.required = true;
             } else {
+                // Hide the fields if another option is selected
                 otherRelationshipContainer.classList.add('hidden');
+                otherGenderContainer.classList.add('hidden');
                 otherRelationshipInput.required = false;
-                otherRelationshipInput.value = '';
+                otherGenderSelect.required = false;
+                otherRelationshipInput.value = ''; // Clear the input
             }
         });
 
+        // Event listener for form submission to generate the letter
         nocForm.addEventListener('submit', function(event) {
             event.preventDefault();
 
+            // --- Gather data from form inputs ---
             const declarantName = document.getElementById('declarantName').value.trim() || "[اسم مُقدم التعهد]";
-            let declarantRelationshipInput = declarantRelationshipSelect.value;
+            const declarantRelationshipInput = declarantRelationshipSelect.value;
             const declarantNationality = document.getElementById('declarantNationality').value.trim() || "[جنسية مُقدم التعهد]";
             const declarantIdNumber = document.getElementById('declarantIdNumber').value.trim() || "[رقم الهوية/الرقم الموحد]";
-            const daughterName = document.getElementById('daughterName').value.trim() || "[اسم صاحبة الشأن]"; 
-            const daughterNationality = document.getElementById('daughterNationality').value.trim() || "[جنسية صاحبة الشأن]"; 
+            const concernedPersonName = document.getElementById('concernedPersonName').value.trim() || "[اسم صاحب/ة الشأن]"; 
+            const concernedPersonNationality = document.getElementById('concernedPersonNationality').value.trim() || "[جنسية صاحب/ة الشأن]"; 
             const currentDate = getCurrentArabicDate();
+            
+            // --- Logic for determining relationship and gendered terms ---
             let relationshipTerm = ""; 
+            let mentionedAdjective = "المذكورة"; // Default to feminine
+            let maritalStatusAdjective = "غير متزوجة"; // Default to feminine
+
             if (declarantRelationshipInput === "أخرى") {
                 const otherRelationshipText = otherRelationshipInput.value.trim();
-                relationshipTerm = otherRelationshipText ? `الآنسة (${otherRelationshipText})` : "الآنسة (صلة قرابة أخرى)"; 
+                const gender = otherGenderSelect.value;
+                
+                if (gender === 'السيد') {
+                    mentionedAdjective = "المذكور";
+                    maritalStatusAdjective = "غير متزوج";
+                }
+                
+                relationshipTerm = otherRelationshipText ? `${gender} (${otherRelationshipText})` : `${gender} (صلة قرابة أخرى)`; 
             } else {
+                // For "ابنتي" or "أختي", the subject is female
                 relationshipTerm = declarantRelationshipInput;
             }
 
+            // --- Logo URLs with placeholders ---
             const gdrfaLogoUrl = 'src/gdrfa-logo.png';
             const uaeEagleLogoUrl = 'src/uae-eagle.png';
 
+            // --- Generate the letter HTML ---
             letterOutputDiv.innerHTML = `
                 <div class="letterhead">
                     <div class="logo-container">
@@ -396,10 +431,10 @@
                         أتعهد أنا الموقع أدناه: <strong>${declarantName}</strong>، الجنسية: <strong>${declarantNationality}</strong>.
                     </p>
                     <p>
-                        رقم الملف / الرقم الموحد / رقم هوية: <strong>${declarantIdNumber}</strong>. بأن ${relationshipTerm} المذكورة:
+                        رقم الملف / الرقم الموحد / رقم هوية: <strong>${declarantIdNumber}</strong>. بأن ${relationshipTerm} ${mentionedAdjective}:
                     </p>
                     <p>
-                        <strong>${daughterName}</strong>، الجنسية: <strong>${daughterNationality}</strong>، غير متزوجة.
+                        <strong>${concernedPersonName}</strong>، الجنسية: <strong>${concernedPersonNationality}</strong>، ${maritalStatusAdjective}.
                     </p>
                     <p class="legal-clause">
                         وفي حال ثبوت غير ذلك أتحمل كافة تبعيات هذا الإقرار وذلك استناداً إلى المادة رقم (33) من قانون دخول وإقامة الأجانب 1973/6 (كل من أعطى بياناً كاذباً بقصد التهرب من أحكام هذا القانون يعاقب بالحبس مدة لا تجاوز ستة أشهر وبغرامة لا تقل عن (5000) خمسة آلاف درهم ولا تجاوز (10000) عشرة آلاف درهم أو بإحدى هاتين العقوبتين، وعلى المحكمة أن تأمر بإبعاد المخالف عن الدولة).
@@ -410,11 +445,14 @@
                     <p>التوقيع: .......................................</p>
                 </div>
             `;
+
+            // --- Show the generated letter and print button ---
             letterPreviewContainer.style.display = 'block';
             printLetterButton.classList.remove('hidden');
             letterPreviewContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
         });
 
+        // --- Modal Control Script ---
         // Event listener for the main "Print" button to open the modal
         printLetterButton.addEventListener('click', function() {
             printModal.classList.add('visible');
