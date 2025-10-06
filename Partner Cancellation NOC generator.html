@@ -16,6 +16,16 @@
             color: #333;
             animation: fadeInAnimation 0.8s ease-in-out;
         }
+        body.is-dragging, body.is-dragging * {
+            user-select: none !important;
+            -webkit-user-select: none !important;
+            cursor: move !important;
+        }
+        body.is-resizing, body.is-resizing * {
+            user-select: none !important;
+            -webkit-user-select: none !important;
+        }
+
 
         @keyframes fadeInAnimation {
             from { opacity: 0; transform: translateY(-10px); }
@@ -66,6 +76,15 @@
             background-color: #6b7280;
             transform: translateY(-1px);
         }
+        .btn-tertiary {
+             background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+             transition: all 0.3s ease;
+             box-shadow: 0 4px 15px 0 rgba(16, 185, 129, 0.3);
+        }
+        .btn-tertiary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px 0 rgba(16, 185, 129, 0.4);
+        }
         .back-button {
             display: inline-flex;
             align-items: center;
@@ -95,17 +114,17 @@
         }
         .hidden { display: none; }
 
-        /* --- A4 Preview & Letter Styling (FIXED) --- */
+        /* --- A4 Preview & Letter Styling --- */
         #letterPreviewContainer {
             display: none;
             margin-top: 2rem;
             padding: 2rem;
-            background-color: #e2e8f0; /* Neutral background to highlight the white paper */
+            background-color: #e2e8f0;
         }
         #letterOutput {
             background-color: white;
             width: 210mm;
-            height: 297mm; /* Use fixed height for A4 */
+            height: 297mm;
             padding: 20mm 15mm;
             margin: 0 auto;
             box-shadow: 0 0 15px rgba(0,0,0,0.2);
@@ -115,8 +134,12 @@
             position: relative;
             display: flex;
             flex-direction: column;
-            box-sizing: border-box; /* CRITICAL: Ensures padding is inside the width/height */
-            overflow: hidden; /* CRITICAL: Prevents minor overflows from creating a second page */
+            box-sizing: border-box;
+            overflow: hidden;
+            user-select: none;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+            cursor: default;
         }
         #letterOutput h1, #letterOutput h2, #letterOutput p, #letterOutput div:not(.id-images-container):not(.image-signature-block) { text-align: right; }
         #letterOutput .date-line { text-align: left; font-size: 11pt; margin-bottom: 1.5rem; }
@@ -125,57 +148,57 @@
         #letterOutput .signature-area { margin-top: 1rem; text-align: left; padding-left: 1cm; }
         #letterOutput .id-images-container { margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid #eee; display: flex; justify-content: space-around; align-items: flex-start; gap: 1rem; width: 100%; }
         .image-signature-block { display: flex; flex-direction: column; align-items: center; text-align: center; width: 48%; }
-        /* EDITED: Increased image size by another 15% */
         .image-signature-block img { max-width: 100%; max-height: 318px; border: 1px solid #ddd; object-fit: contain; margin-bottom: 0.5rem; border-radius: 4px; }
         .signature-line { font-size: 10pt; color: #333; margin-top: 0.5rem; width: 100%; line-height: 1.4; }
         #letterOutput .id-images-container div > div:first-child { font-size: 10pt; color: #777; padding: 10px; border: 1px dashed #ccc; min-height: 120px; display: flex; align-items: center; justify-content: center; width: 100%; max-width: 250px; margin: 0 auto 0.5rem auto; }
 
-        /* --- Print Styles (FIXED) --- */
-        @page {
-            size: A4;
-            margin: 0; /* Removes browser print margins, we use padding on #letterOutput instead */
+        /* --- Stamp/Signature Styles --- */
+        .stamp-container {
+            position: absolute; cursor: move; border: 2px solid transparent; user-select: none; -webkit-user-select: none; z-index: 10;
         }
+        .stamp-container.active { border-color: #60a5fa; }
+        .stamp-container img { width: 100%; height: 100%; pointer-events: none; }
+        .resizer { position: absolute; width: 12px; height: 12px; background: white; border: 2px solid #60a5fa; border-radius: 50%; z-index: 11; display: none; }
+        .stamp-container.active .resizer { display: block; }
+        .resizer.top-left { top: -6px; left: -6px; cursor: nwse-resize; }
+        .resizer.top-right { top: -6px; right: -6px; cursor: nesw-resize; }
+        .resizer.bottom-left { bottom: -6px; left: -6px; cursor: nesw-resize; }
+        .resizer.bottom-right { bottom: -6px; right: -6px; cursor: nwse-resize; }
+        .stamp-container .delete-stamp-btn {
+            position: absolute; top: -12px; right: -12px; width: 24px; height: 24px;
+            background-color: #ef4444; color: white; border: 2px solid white;
+            border-radius: 50%; cursor: pointer; display: none; align-items: center;
+            justify-content: center; font-size: 14px; line-height: 1; font-weight: bold;
+            z-index: 12; box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .stamp-container.active .delete-stamp-btn { display: flex; }
+        
+        /* --- Side Panel Styles --- */
+        #signatureSidePanel {
+            position: fixed; top: 0; right: 0; width: 320px; height: 100%;
+            background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            box-shadow: -10px 0 30px rgba(0,0,0,0.1); z-index: 1000;
+            transform: translateX(100%); transition: transform 0.3s ease-in-out;
+        }
+        #signatureSidePanel.open { transform: translateX(0); }
 
+        /* --- Print Styles --- */
+        @page { size: A4; margin: 0; }
         @media print {
-            body {
-                background: none;
-                margin: 0;
-                padding: 0;
-            }
-            .no-print {
-                display: none !important;
-            }
-            #letterPreviewContainer {
-                display: block !important;
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                margin: 0;
-                padding: 0;
-                background: none;
-            }
-            #letterOutput {
-                margin: 0;
-                box-shadow: none;
-                border: none;
-                page-break-after: always;
-                overflow: hidden !important;
-            }
-            .image-signature-block {
-                page-break-inside: avoid; /* Prevents signature blocks from splitting across pages */
-            }
-            /* EDITED: Increased print image size by another 15% */
-            #letterOutput .id-images-container img {
-                max-height: 276px; /* Slightly smaller images for print to guarantee fit */
-            }
+            body { background: none; margin: 0; padding: 0; }
+            .no-print { display: none !important; }
+            #letterPreviewContainer { display: block !important; position: absolute; top: 0; left: 0; width: 100%; height: 100%; margin: 0; padding: 0; background: none; }
+            #letterOutput { margin: 0; box-shadow: none; border: none; page-break-after: always; overflow: hidden !important; }
+            .image-signature-block { page-break-inside: avoid; }
+            #letterOutput .id-images-container img { max-height: 276px; }
+            .stamp-container { border: none !important; }
+            .resizer, .delete-stamp-btn { display: none !important; }
         }
     </style>
 </head>
 <body class="min-h-screen flex flex-col items-center justify-center p-4 sm:p-6 lg:p-8">
 
-    <!-- The form container, hidden during print -->
+    <!-- Form container -->
     <div class="w-full max-w-4xl no-print">
         <a href="index.html" class="back-button page-link">
             <span class="back-button-arrow">&rarr;</span>
@@ -187,9 +210,7 @@
         <h1 class="text-2xl sm:text-3xl font-bold text-center text-gray-700 mb-8">
             إنشاء خطاب عدم ممانعة لإلغاء إقامة شريك
         </h1>
-
         <form id="nocForm" class="space-y-6">
-             <!-- Form fields remain unchanged -->
              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                     <label for="companyName" class="block text-sm font-medium text-gray-700 mb-1">اسم الشركة:</label>
@@ -200,7 +221,6 @@
                     <input type="text" id="licenseNumber" name="licenseNumber" class="form-input w-full rounded-md p-2.5" placeholder="مثال: 123456" required>
                 </div>
             </div>
-
             <h2 class="text-xl font-semibold text-gray-700 pt-4 border-t border-gray-300 mt-6">تفاصيل الشريك (المراد إلغاء إقامته)</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
@@ -226,7 +246,6 @@
                     <label for="partnerPassportNumber" class="block text-sm font-medium text-gray-700 mb-1">رقم جواز سفر الشريك:</label>
                     <input type="text" id="partnerPassportNumber" name="partnerPassportNumber" class="form-input w-full rounded-md p-2.5" placeholder="رقم جواز السفر" required>
                 </div>
-
                 <div id="partnerIdUploadSection" class="col-span-full">
                     <label class="block text-sm font-medium text-gray-700 mb-2">صورة هوية الشريك:</label>
                     <div class="radio-group mb-4">
@@ -257,7 +276,6 @@
                     <label for="representativeName" class="block text-sm font-medium text-gray-700 mb-1">اسم ممثل الشركة:</label>
                     <input type="text" id="representativeName" name="representativeName" class="form-input w-full rounded-md p-2.5" placeholder="اسم ممثل الشركة (كما في الهوية)" required>
                 </div>
-
                 <div id="representativeIdUploadSection" class="col-span-full">
                     <label class="block text-sm font-medium text-gray-700 mb-2">صورة هوية ممثل الشركة:</label>
                     <div class="radio-group mb-4">
@@ -281,26 +299,41 @@
                     <img id="representativeIdPreview" src="#" alt="معاينة هوية الممثل" class="mt-2 rounded-md max-h-32 hidden mx-auto"/>
                 </div>
             </div>
-
             <div class="flex flex-col sm:flex-row justify-center items-center gap-4 pt-6">
-                <button type="submit" class="btn-primary text-white font-semibold py-2.5 px-6 rounded-lg w-full sm:w-auto">
-                    إنشاء الخطاب
-                </button>
-                <button type="button" id="printLetterButton" class="btn-secondary font-semibold py-2.5 px-6 rounded-lg w-full sm:w-auto hidden">
-                    طباعة الخطاب
-                </button>
+                <button type="submit" class="btn-primary text-white font-semibold py-2.5 px-6 rounded-lg w-full sm:w-auto">إنشاء الخطاب</button>
+                <button type="button" id="addStampButton" class="btn-tertiary text-white font-semibold py-2.5 px-6 rounded-lg w-full sm:w-auto hidden">إضافة ختم أو توقيع</button>
+                <button type="button" id="printLetterButton" class="btn-secondary font-semibold py-2.5 px-6 rounded-lg w-full sm:w-auto hidden">طباعة الخطاب</button>
             </div>
         </form>
     </div>
 
-    <!-- The A4 preview area. This is what will be printed. -->
+    <!-- A4 preview area -->
     <div id="letterPreviewContainer" class="w-full mt-8">
         <div id="letterOutput" dir="rtl">
-            <!-- Letter content will be generated here by JavaScript -->
+            <!-- Letter content will be generated here -->
         </div>
     </div>
 
+    <!-- NEW Signature Side Panel -->
+    <div id="signatureSidePanel" class="flex flex-col p-4 space-y-4 no-print">
+        <div class="flex justify-between items-center pb-2 border-b">
+            <h2 class="text-xl font-bold text-gray-700">إدارة الأختام</h2>
+            <button id="closePanelButton" class="text-gray-500 hover:text-gray-800 text-3xl font-light">&times;</button>
+        </div>
+        <a href="https://www.remove.bg/" target="_blank" rel="noopener noreferrer" class="btn-primary text-white font-semibold py-2 px-4 rounded-lg w-full text-center">فتح مزيل الخلفية</a>
+        <div>
+            <label for="newStampUploader" class="btn-tertiary text-white font-semibold py-2 px-4 rounded-lg w-full text-center cursor-pointer block">إضافة صورة جديدة</label>
+            <input type="file" id="newStampUploader" accept="image/*" class="hidden" multiple>
+        </div>
+        <div id="stampList" class="flex-grow overflow-y-auto space-y-2 p-1 border-t border-b">
+            <!-- Stamp thumbnails will be injected here -->
+        </div>
+        <p class="text-xs text-gray-500 text-center">اسحب الصورة من هنا وأفلتها على المستند مباشرة.</p>
+    </div>
+
+
     <script>
+        // --- UTILITY FUNCTIONS ---
         function getCurrentArabicDate() {
             const today = new Date();
             const day = String(today.getDate()).padStart(2, '0');
@@ -308,14 +341,19 @@
             const year = today.getFullYear();
             return `${day}/${month}/${year}`;
         }
+
         function readFileAsDataURL(file) {
             return new Promise((resolve, reject) => {
+                if (!file.type.startsWith('image/')) {
+                    return reject(new Error('File is not an image.'));
+                }
                 const reader = new FileReader();
                 reader.onload = (e) => resolve(e.target.result);
                 reader.onerror = (e) => reject(e);
                 reader.readAsDataURL(file);
             });
         }
+        
         async function mergeImages(frontImageSrc, backImageSrc) {
             return new Promise((resolve, reject) => {
                 const frontImg = new Image();
@@ -333,179 +371,370 @@
                         resolve(canvas.toDataURL('image/png'));
                     }
                 };
-                frontImg.onload = checkCompletion;
-                frontImg.onerror = reject;
-                frontImg.src = frontImageSrc;
-                backImg.onload = checkCompletion;
-                backImg.onerror = reject;
-                backImg.src = backImageSrc;
+                frontImg.onload = checkCompletion; frontImg.onerror = reject; frontImg.src = frontImageSrc;
+                backImg.onload = checkCompletion; backImg.onerror = reject; backImg.src = backImageSrc;
             });
         }
-        async function updateImagePreview(uploadType, singleFileInput, frontFileInput, backFileInput, previewImage) {
-            previewImage.src = "#";
-            previewImage.classList.add('hidden');
-            let finalImageSrc = null;
-            if (uploadType === 'single') {
-                const file = singleFileInput.files[0];
-                if (file) {
-                    try { finalImageSrc = await readFileAsDataURL(file); } catch (error) { console.error("Error reading single file:", error); }
-                }
-            } else if (uploadType === 'dual') {
-                const frontFile = frontFileInput.files[0];
-                const backFile = backFileInput.files[0];
-                if (frontFile && backFile) {
-                    try {
-                        const frontSrc = await readFileAsDataURL(frontFile);
-                        const backSrc = await readFileAsDataURL(backFile);
-                        finalImageSrc = await mergeImages(frontSrc, backSrc);
-                    } catch (error) { console.error("Error merging dual images:", error); }
-                } else if (frontFile) {
-                    try { finalImageSrc = await readFileAsDataURL(frontFile); } catch (error) { console.error("Error reading front file only:", error); }
-                } else if (backFile) {
-                    try { finalImageSrc = await readFileAsDataURL(backFile); } catch (error) { console.error("Error reading back file only:", error); }
-                }
-            }
-            if (finalImageSrc) {
-                previewImage.src = finalImageSrc;
-                previewImage.classList.remove('hidden');
-            }
-            return finalImageSrc;
-        }
+
+        // --- DOM ELEMENT REFERENCES ---
         const nocForm = document.getElementById('nocForm');
         const letterOutputDiv = document.getElementById('letterOutput');
         const letterPreviewContainer = document.getElementById('letterPreviewContainer');
         const printLetterButton = document.getElementById('printLetterButton');
-        const partnerIdUploadTypeRadios = document.querySelectorAll('input[name="partnerIdUploadType"]');
-        const partnerSingleImageUploadDiv = document.getElementById('partnerSingleImageUpload');
-        const partnerDualImageUploadDiv = document.getElementById('partnerDualImageUpload');
-        const partnerIdFileSingle = document.getElementById('partnerIdFileSingle');
-        const partnerIdFileFront = document.getElementById('partnerIdFileFront');
-        const partnerIdFileBack = document.getElementById('partnerIdFileBack');
-        const partnerIdPreview = document.getElementById('partnerIdPreview');
-        const representativeIdUploadTypeRadios = document.querySelectorAll('input[name="representativeIdUploadType"]');
-        const representativeSingleImageUploadDiv = document.getElementById('representativeSingleImageUpload');
-        const representativeDualImageUploadDiv = document.getElementById('representativeDualImageUpload');
-        const representativeIdFileSingle = document.getElementById('representativeIdFileSingle');
-        const representativeIdFileFront = document.getElementById('representativeIdFileFront');
-        const representativeIdFileBack = document.getElementById('representativeIdFileBack');
-        const representativeIdPreview = document.getElementById('representativeIdPreview');
         let partnerIdFinalImageSrc = null;
         let representativeIdFinalImageSrc = null;
 
-        function handlePartnerIdUploadTypeChange() {
-            const selectedType = document.querySelector('input[name="partnerIdUploadType"]:checked').value;
-            partnerIdFileSingle.value = '';
-            partnerIdFileFront.value = '';
-            partnerIdFileBack.value = '';
-            partnerIdPreview.src = '#';
-            partnerIdPreview.classList.add('hidden');
-            partnerIdFinalImageSrc = null;
-            if (selectedType === 'single') {
-                partnerSingleImageUploadDiv.classList.remove('hidden');
-                partnerDualImageUploadDiv.classList.add('hidden');
-            } else {
-                partnerSingleImageUploadDiv.classList.add('hidden');
-                partnerDualImageUploadDiv.classList.remove('hidden');
-            }
-        }
-        function handleRepresentativeIdUploadTypeChange() {
-            const selectedType = document.querySelector('input[name="representativeIdUploadType"]:checked').value;
-            representativeIdFileSingle.value = '';
-            representativeIdFileFront.value = '';
-            representativeIdFileBack.value = '';
-            representativeIdPreview.src = '#';
-            representativeIdPreview.classList.add('hidden');
-            representativeIdFinalImageSrc = null;
-            if (selectedType === 'single') {
-                representativeSingleImageUploadDiv.classList.remove('hidden');
-                representativeDualImageUploadDiv.classList.add('hidden');
-            } else {
-                representativeSingleImageUploadDiv.classList.add('hidden');
-                representativeDualImageUploadDiv.classList.remove('hidden');
-            }
-        }
-        partnerIdUploadTypeRadios.forEach(radio => radio.addEventListener('change', handlePartnerIdUploadTypeChange));
-        representativeIdUploadTypeRadios.forEach(radio => radio.addEventListener('change', handleRepresentativeIdUploadTypeChange));
-        handlePartnerIdUploadTypeChange();
-        handleRepresentativeIdUploadTypeChange();
-        partnerIdFileSingle.addEventListener('change', async () => { partnerIdFinalImageSrc = await updateImagePreview(document.querySelector('input[name="partnerIdUploadType"]:checked').value, partnerIdFileSingle, partnerIdFileFront, partnerIdFileBack, partnerIdPreview); });
-        partnerIdFileFront.addEventListener('change', async () => { partnerIdFinalImageSrc = await updateImagePreview(document.querySelector('input[name="partnerIdUploadType"]:checked').value, partnerIdFileSingle, partnerIdFileFront, partnerIdFileBack, partnerIdPreview); });
-        partnerIdFileBack.addEventListener('change', async () => { partnerIdFinalImageSrc = await updateImagePreview(document.querySelector('input[name="partnerIdUploadType"]:checked').value, partnerIdFileSingle, partnerIdFileFront, partnerIdFileBack, partnerIdPreview); });
-        representativeIdFileSingle.addEventListener('change', async () => { representativeIdFinalImageSrc = await updateImagePreview(document.querySelector('input[name="representativeIdUploadType"]:checked').value, representativeIdFileSingle, representativeIdFileFront, representativeIdFileBack, representativeIdPreview); });
-        representativeIdFileFront.addEventListener('change', async () => { representativeIdFinalImageSrc = await updateImagePreview(document.querySelector('input[name="representativeIdUploadType"]:checked').value, representativeIdFileSingle, representativeIdFileFront, representativeIdFileBack, representativeIdPreview); });
-        representativeIdFileBack.addEventListener('change', async () => { representativeIdFinalImageSrc = await updateImagePreview(document.querySelector('input[name="representativeIdUploadType"]:checked').value, representativeIdFileSingle, representativeIdFileFront, representativeIdFileBack, representativeIdPreview); });
-        
+        // --- FORM AND LETTER GENERATION LOGIC ---
         nocForm.addEventListener('submit', async function(event) {
             event.preventDefault();
-            const companyName = document.getElementById('companyName').value.trim();
-            const licenseNumber = document.getElementById('licenseNumber').value.trim();
-            const partnerName = document.getElementById('partnerName').value.trim();
-            const partnerGender = document.getElementById('partnerGender').value;
-            const partnerNationality = document.getElementById('partnerNationality').value.trim();
-            const partnerIdNumber = document.getElementById('partnerIdNumber').value.trim();
-            const partnerPassportNumber = document.getElementById('partnerPassportNumber').value.trim();
-            const representativeName = document.getElementById('representativeName').value.trim();
-            const partnerSalutation = partnerGender === 'male' ? 'السيد' : 'السيدة';
-            const currentDate = getCurrentArabicDate();
+            const data = Object.fromEntries(new FormData(nocForm).entries());
+            const partnerSalutation = data.partnerGender === 'male' ? 'السيد' : 'السيدة';
             const partnerIdImageTag = (partnerIdFinalImageSrc && partnerIdFinalImageSrc !== '#') ? `<img src="${partnerIdFinalImageSrc}" alt="هوية الشريك">` : '<div>(لم يتم رفع صورة هوية الشريك)</div>';
             const representativeIdImageTag = (representativeIdFinalImageSrc && representativeIdFinalImageSrc !== '#') ? `<img src="${representativeIdFinalImageSrc}" alt="هوية ممثل الشركة">` : '<div>(لم يتم رفع صورة هوية الممثل)</div>';
-            const partnerSignatureText = `توقيع ${partnerSalutation} / ${partnerName || 'الشريك'}:`;
-            const representativeSignatureText = `توقيع ممثل الشركة / ${representativeName || 'الممثل'}:`;
+            const partnerSignatureText = `توقيع ${partnerSalutation} / ${data.partnerName || 'الشريك'}:`;
+            const representativeSignatureText = `توقيع ممثل الشركة / ${data.representativeName || 'الممثل'}:`;
             letterOutputDiv.innerHTML = `
-                <div class="date-line">التاريخ: ${currentDate}</div>
+                <div class="date-line">التاريخ: ${getCurrentArabicDate()}</div>
                 <div class="main-content">
                     <p class="mb-4">السادة / الإدارة العامة للإقامة وشؤون الأجانب - دبي الموقرين،</p>
                     <p class="mb-6">تحية طيبة وبعد،</p>
                     <h2 class="subject-line">الموضوع: طلب إلغاء إقامة شريك مع الإبقاء على الحصص</h2>
                     <p class="mb-4">
-                        نقر نحن شركة / <strong>${companyName || '[اسم الشركة]'}</strong>، رقم الرخصة التجارية: <strong>${licenseNumber || '[رقم الرخصة]'}</strong>،
-                        بأنه ليس لدينا أي مانع من إلغاء إقامة ${partnerSalutation} / <strong>${partnerName || '[اسم الشريك]'}</strong>،
-                        الذي يحمل الجنسية <strong>${partnerNationality || '[الجنسية]'}</strong>، ورقم الهوية الإماراتية: <strong>${partnerIdNumber || '[رقم الهوية]'}</strong>،
-                        ويحمل جواز سفر رقم: <strong>${partnerPassportNumber || '[رقم الجواز]'}</strong>.
+                        نقر نحن شركة / <strong>${data.companyName || '[اسم الشركة]'}</strong>، رقم الرخصة التجارية: <strong>${data.licenseNumber || '[رقم الرخصة]'}</strong>،
+                        بأنه ليس لدينا أي مانع من إلغاء إقامة ${partnerSalutation} / <strong>${data.partnerName || '[اسم الشريك]'}</strong>،
+                        الذي يحمل الجنسية <strong>${data.partnerNationality || '[الجنسية]'}</strong>، ورقم الهوية الإماراتية: <strong>${data.partnerIdNumber || '[رقم الهوية]'}</strong>،
+                        ويحمل جواز سفر رقم: <strong>${data.partnerPassportNumber || '[رقم الجواز]'}</strong>.
                     </p>
-                    <p class="mb-6">
-                        لذا، نرجو من سيادتكم التكرم بالموافقة على طلب إلغاء إقامة المذكور أعلاه مع الإبقاء على حصصه في الشركة.
-                    </p>
+                    <p class="mb-6">لذا، نرجو من سيادتكم التكرم بالموافقة على طلب إلغاء إقامة المذكور أعلاه مع الإبقاء على حصصه في الشركة.</p>
                     <p class="mb-4">ولكم منا جزيل الشكر والتقدير والاحترام.</p>
                 </div>
                 <div class="signature-area">
                     <p>مع خالص التحية والتقدير،</p>
-                    <p>عن شركة: ${companyName || '[اسم الشركة]'}</p>
+                    <p>عن شركة: ${data.companyName || '[اسم الشركة]'}</p>
                 </div>
                 <div class="id-images-container">
-                    <div class="image-signature-block">
-                        ${partnerIdImageTag}
-                        <p class="signature-line">${partnerSignatureText}<br><br><br>.......................................</p>
-                    </div>
-                    <div class="image-signature-block">
-                        ${representativeIdImageTag}
-                        <p class="signature-line">${representativeSignatureText}<br><br><br>.......................................</p>
-                    </div>
-                </div>
-            `;
+                    <div class="image-signature-block">${partnerIdImageTag}<p class="signature-line">${partnerSignatureText}<br><br><br>.......................................</p></div>
+                    <div class="image-signature-block">${representativeIdImageTag}<p class="signature-line">${representativeSignatureText}<br><br><br>.......................................</p></div>
+                </div>`;
             letterPreviewContainer.style.display = 'block';
             printLetterButton.classList.remove('hidden');
+            document.getElementById('addStampButton').classList.remove('hidden');
+            renderPlacedStamps(); // Ensure stamps are re-rendered if letter is re-generated
             letterPreviewContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
         });
+        
+        // --- SIGNATURE SIDE PANEL & DRAG-DROP LOGIC ---
+        let stampLibrary = []; // Library of available stamps: {id, src}
+        let placedStamps = []; // Stamps on the page: {instanceId, libId, top, left, width, height}
+        
+        const signatureSidePanel = document.getElementById('signatureSidePanel');
+        const newStampUploader = document.getElementById('newStampUploader');
+        const stampList = document.getElementById('stampList');
 
-        // EDITED: Changed print button to print directly
-        printLetterButton.addEventListener('click', function() {
-            window.print();
+        const togglePanel = (force) => {
+            const isOpen = signatureSidePanel.classList.contains('open');
+            const show = force === undefined ? !isOpen : force;
+            signatureSidePanel.classList.toggle('open', show);
+        };
+        
+        const renderStampLibrary = () => {
+            stampList.innerHTML = '';
+            stampLibrary.forEach(stamp => {
+                const listItem = document.createElement('div');
+                listItem.className = 'p-2 border rounded-lg flex items-center justify-between bg-white shadow-sm';
+                listItem.innerHTML = `<img src="${stamp.src}" class="w-16 h-16 object-contain border rounded-md p-1 cursor-grab" draggable="true" data-id="${stamp.id}"><button data-id="${stamp.id}" class="delete-stamp-from-lib-btn text-red-500 hover:text-red-700 text-2xl font-bold pr-2">&times;</button>`;
+                stampList.appendChild(listItem);
+            });
+        };
+
+        const renderPlacedStamps = () => {
+             letterOutputDiv.querySelectorAll('.stamp-container').forEach(el => el.remove());
+             placedStamps.forEach(stamp => {
+                const libraryItem = stampLibrary.find(libStamp => libStamp.id === stamp.libId);
+                if (!libraryItem) return;
+                const container = createStampElement(stamp, libraryItem.src);
+                letterOutputDiv.appendChild(container);
+                makeDraggableAndResizable(container);
+             });
+        };
+
+        const createStampElement = (stamp, src) => {
+            const container = document.createElement('div');
+            container.className = 'stamp-container';
+            container.dataset.instanceId = stamp.instanceId;
+            container.style.cssText = `width:${stamp.width}px; height:${stamp.height}px; top:${stamp.top}px; left:${stamp.left}px;`;
+            container.innerHTML = `<img src="${src}"><div class="resizer top-left"></div><div class="resizer top-right"></div><div class="resizer bottom-left"></div><div class="resizer bottom-right"></div><button class="delete-stamp-btn">&times;</button>`;
+            return container;
+        };
+
+        newStampUploader.addEventListener('change', async e => {
+            for (const file of e.target.files) {
+                try {
+                    const imageSrc = await readFileAsDataURL(file);
+                    stampLibrary.push({ id: Date.now() + Math.random(), src: imageSrc });
+                } catch (error) {
+                    console.error("Error reading file:", error);
+                    alert("خطأ: الملف الذي تم اختياره ليس صورة صالحة.");
+                }
+            }
+            renderStampLibrary();
+            e.target.value = '';
         });
 
+        stampList.addEventListener('dragstart', e => {
+            if (e.target.tagName === 'IMG') {
+                e.dataTransfer.setData('text/plain', e.target.dataset.id);
+                e.dataTransfer.effectAllowed = 'copy';
+            }
+        });
+
+        stampList.addEventListener('click', e => {
+            if (e.target.classList.contains('delete-stamp-from-lib-btn')) {
+                const libId = parseFloat(e.target.dataset.id);
+                stampLibrary = stampLibrary.filter(s => s.id !== libId);
+                placedStamps = placedStamps.filter(s => s.libId !== libId);
+                renderStampLibrary();
+                renderPlacedStamps();
+            }
+        });
+
+        const handleDrop = e => {
+            e.preventDefault();
+            const libId = parseFloat(e.dataTransfer.getData('text/plain'));
+            const libraryItem = stampLibrary.find(s => s.id === libId);
+            if (!libraryItem) return;
+
+            const rect = letterOutputDiv.getBoundingClientRect();
+            const initialWidth = 150;
+            const img = new Image();
+            img.onload = () => {
+                const aspectRatio = img.naturalWidth / img.naturalHeight;
+                const initialHeight = initialWidth / aspectRatio;
+                const left = e.clientX - rect.left - (initialWidth / 2);
+                const top = e.clientY - rect.top - (initialHeight / 2);
+                placedStamps.push({ instanceId: Date.now() + Math.random(), libId, top, left, width: initialWidth, height: initialHeight });
+                renderPlacedStamps();
+            };
+            img.src = libraryItem.src;
+        };
+        letterOutputDiv.addEventListener('dragover', e => e.preventDefault());
+        letterOutputDiv.addEventListener('drop', handleDrop);
+
+
+        function makeDraggableAndResizable(element) {
+            const updateStampState = () => {
+                const instanceId = parseFloat(element.dataset.instanceId);
+                const stampIndex = placedStamps.findIndex(s => s.instanceId === instanceId);
+                if (stampIndex > -1) {
+                    placedStamps[stampIndex].top = element.offsetTop;
+                    placedStamps[stampIndex].left = element.offsetLeft;
+                    placedStamps[stampIndex].width = parseFloat(element.style.width);
+                    placedStamps[stampIndex].height = parseFloat(element.style.height);
+                }
+            };
+            
+            const handleMouseDown = e => {
+                e.stopPropagation();
+                document.querySelectorAll('.stamp-container').forEach(el => el.classList.remove('active'));
+                element.classList.add('active');
+                
+                if (e.target.classList.contains('resizer')) { 
+                    initResize(e); return;
+                }
+                document.body.classList.add('is-dragging');
+                const dragStart = e.type.startsWith('touch') ? e.touches[0] : e;
+                let pos3 = dragStart.clientX;
+                let pos4 = dragStart.clientY;
+
+                const elementDrag = moveEvent => {
+                    moveEvent.preventDefault();
+                    const dragMove = moveEvent.type.startsWith('touch') ? moveEvent.touches[0] : moveEvent;
+                    const pos1 = pos3 - dragMove.clientX;
+                    const pos2 = pos4 - dragMove.clientY;
+                    pos3 = dragMove.clientX;
+                    pos4 = dragMove.clientY;
+                    element.style.top = (element.offsetTop - pos2) + "px";
+                    element.style.left = (element.offsetLeft - pos1) + "px";
+                };
+
+                const closeDragElement = () => {
+                    document.body.classList.remove('is-dragging');
+                    document.removeEventListener('mousemove', elementDrag);
+                    document.removeEventListener('touchmove', elementDrag);
+                    document.removeEventListener('mouseup', closeDragElement);
+                    document.removeEventListener('touchend', closeDragElement);
+                    updateStampState();
+                };
+
+                document.addEventListener('mouseup', closeDragElement);
+                document.addEventListener('touchend', closeDragElement);
+                document.addEventListener('mousemove', elementDrag);
+                document.addEventListener('touchmove', elementDrag);
+            };
+
+            const initResize = e => {
+                e.preventDefault(); e.stopPropagation();
+                document.body.classList.add('is-resizing');
+                const resizer = e.target;
+                const original_width = parseFloat(getComputedStyle(element).width);
+                const original_height = parseFloat(getComputedStyle(element).height);
+                const original_x = element.offsetLeft;
+                const original_y = element.offsetTop;
+                const resizeStart = e.type.startsWith('touch') ? e.touches[0] : e;
+                const original_mouse_x = resizeStart.pageX;
+                const original_mouse_y = resizeStart.pageY;
+
+                const resize = moveEvent => {
+                    moveEvent.preventDefault();
+                    const resizeMove = moveEvent.type.startsWith('touch') ? moveEvent.touches[0] : moveEvent;
+                    const aspectRatio = original_width / original_height;
+
+                    if (resizer.classList.contains('bottom-right')) {
+                        const width = original_width + (resizeMove.pageX - original_mouse_x);
+                        if (width > 20) {
+                           element.style.width = width + 'px'; element.style.height = (width / aspectRatio) + 'px';
+                        }
+                    } else if (resizer.classList.contains('bottom-left')) {
+                        const width = original_width - (resizeMove.pageX - original_mouse_x);
+                         if (width > 20) {
+                            element.style.width = width + 'px'; element.style.height = (width / aspectRatio) + 'px';
+                            element.style.left = (original_x + (resizeMove.pageX - original_mouse_x)) + 'px';
+                        }
+                    } else if (resizer.classList.contains('top-right')) {
+                        const width = original_width + (resizeMove.pageX - original_mouse_x);
+                        if (width > 20) {
+                            element.style.width = width + 'px'; element.style.height = (width / aspectRatio) + 'px';
+                            element.style.top = (original_y + (resizeMove.pageY - original_mouse_y)) + 'px';
+                        }
+                    } else { // top-left
+                        const width = original_width - (resizeMove.pageX - original_mouse_x);
+                        if (width > 20) {
+                            element.style.width = width + 'px'; element.style.height = (width / aspectRatio) + 'px';
+                            element.style.top = (original_y + (resizeMove.pageY - original_mouse_y)) + 'px';
+                            element.style.left = (original_x + (resizeMove.pageX - original_mouse_x)) + 'px';
+                        }
+                    }
+                };
+
+                const stopResize = () => {
+                    document.body.classList.remove('is-resizing');
+                    window.removeEventListener('mousemove', resize);
+                    window.removeEventListener('touchmove', resize);
+                    window.removeEventListener('mouseup', stopResize);
+                    window.removeEventListener('touchend', stopResize);
+                    updateStampState();
+                };
+
+                window.addEventListener('mousemove', resize);
+                window.addEventListener('touchmove', resize);
+                window.addEventListener('mouseup', stopResize);
+                window.addEventListener('touchend', stopResize);
+            };
+
+            element.addEventListener('mousedown', handleMouseDown);
+            element.addEventListener('touchstart', handleMouseDown);
+        }
+
+        // --- GLOBAL EVENT LISTENERS ---
+        document.getElementById('addStampButton').addEventListener('click', () => togglePanel(true));
+        document.getElementById('closePanelButton').addEventListener('click', () => togglePanel(false));
+        
+        letterOutputDiv.addEventListener('click', (e) => {
+            if (e.target.classList.contains('delete-stamp-btn')) {
+                e.stopPropagation();
+                const container = e.target.closest('.stamp-container');
+                const instanceId = parseFloat(container.dataset.instanceId);
+                placedStamps = placedStamps.filter(s => s.instanceId !== instanceId);
+                renderPlacedStamps();
+                return;
+            }
+            if (!e.target.closest('.stamp-container')) {
+                 document.querySelectorAll('.stamp-container').forEach(el => el.classList.remove('active'));
+            }
+        });
+
+        printLetterButton.addEventListener('click', () => {
+             document.querySelectorAll('.stamp-container').forEach(el => el.classList.remove('active'));
+             window.print();
+        });
+
+        // --- REFACTORED ID IMAGE UPLOAD LOGIC ---
+        function setupImageUpload(type) {
+            const singleFile = document.getElementById(`${type}IdFileSingle`);
+            const frontFile = document.getElementById(`${type}IdFileFront`);
+            const backFile = document.getElementById(`${type}IdFileBack`);
+            const preview = document.getElementById(`${type}IdPreview`);
+
+            const processImages = async () => {
+                const selectedType = document.querySelector(`input[name="${type}IdUploadType"]:checked`).value;
+                let finalImageSrc = null;
+                preview.src = '#';
+                preview.classList.add('hidden');
+
+                try {
+                    if (selectedType === 'single') {
+                        if (singleFile.files[0]) {
+                            finalImageSrc = await readFileAsDataURL(singleFile.files[0]);
+                        }
+                    } else { // dual
+                        const front = frontFile.files[0];
+                        const back = backFile.files[0];
+                        if (front && back) {
+                            const frontSrc = await readFileAsDataURL(front);
+                            const backSrc = await readFileAsDataURL(back);
+                            finalImageSrc = await mergeImages(frontSrc, backSrc);
+                        } else if (front) {
+                            finalImageSrc = await readFileAsDataURL(front);
+                        } else if (back) {
+                            finalImageSrc = await readFileAsDataURL(back);
+                        }
+                    }
+                } catch (error) {
+                    console.error(`Error processing image for ${type}:`, error);
+                    alert("خطأ: يرجى اختيار ملف صورة صالح.");
+                }
+
+                if (finalImageSrc) {
+                    preview.src = finalImageSrc;
+                    preview.classList.remove('hidden');
+                }
+
+                if (type === 'partner') {
+                    partnerIdFinalImageSrc = finalImageSrc;
+                } else {
+                    representativeIdFinalImageSrc = finalImageSrc;
+                }
+            };
+
+            [singleFile, frontFile, backFile].forEach(input => input.addEventListener('change', processImages));
+
+            document.querySelectorAll(`input[name="${type}IdUploadType"]`).forEach(r => r.addEventListener('change', () => {
+                const selected = document.querySelector(`input[name="${type}IdUploadType"]:checked`).value;
+                [singleFile.value, frontFile.value, backFile.value] = ['', '', ''];
+                preview.src = '#';
+                preview.classList.add('hidden');
+                if(type === 'partner') partnerIdFinalImageSrc = null; else representativeIdFinalImageSrc = null;
+                document.getElementById(`${type}SingleImageUpload`).classList.toggle('hidden', selected !== 'single');
+                document.getElementById(`${type}DualImageUpload`).classList.toggle('hidden', selected !== 'dual');
+            }));
+        }
+        setupImageUpload('partner');
+        setupImageUpload('representative');
+
+        // Page transition animation
         document.addEventListener('DOMContentLoaded', () => {
-            const pageLinks = document.querySelectorAll('.page-link');
-            pageLinks.forEach(link => {
+            document.querySelectorAll('.page-link').forEach(link => {
                 link.addEventListener('click', e => {
                     e.preventDefault();
-                    const destination = link.href;
                     document.body.classList.add('fade-out');
-                    setTimeout(() => {
-                        window.location.href = destination;
-                    }, 600);
+                    setTimeout(() => { window.location.href = link.href; }, 600);
                 });
             });
+            // Initialize image upload sections correctly on page load
+            document.querySelector('input[name="partnerIdUploadType"]:checked').dispatchEvent(new Event('change'));
+            document.querySelector('input[name="representativeIdUploadType"]:checked').dispatchEvent(new Event('change'));
         });
     </script>
 </body>
 </html>
+
